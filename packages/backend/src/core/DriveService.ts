@@ -148,8 +148,10 @@ export class DriveService {
 	@bindThis
 	private async save(file: MiDriveFile, path: string, name: string, type: string, hash: string, size: number, isRemote: boolean): Promise<MiDriveFile> {
 	// thunbnail, webpublic を必要なら生成
-		const alts = await this.generateAlts(path, type, !file.uri, file.userId);
-
+		const alts = file.userId == null ? {
+			webpublic: null,
+			thumbnail: null,
+		} : await this.generateAlts(path, type, !file.uri, file.userId);
 		const meta = await this.metaService.fetch();
 
 		if (meta.useObjectStorage) {
@@ -231,7 +233,7 @@ export class DriveService {
 			file.size = size;
 			file.storedInternal = false;
 
-			return await this.driveFilesRepository.insert(file).then(x => this.driveFilesRepository.findOneByOrFail(x.identifiers[0]));
+			return await this.driveFilesRepository.insertOne(file);
 		} else { // use internal storage
 			const accessKey = randomUUID();
 			const thumbnailAccessKey = 'thumbnail-' + randomUUID();
@@ -265,7 +267,7 @@ export class DriveService {
 			file.md5 = hash;
 			file.size = size;
 
-			return await this.driveFilesRepository.insert(file).then(x => this.driveFilesRepository.findOneByOrFail(x.identifiers[0]));
+			return await this.driveFilesRepository.insertOne(file);
 		}
 	}
 
@@ -326,8 +328,8 @@ export class DriveService {
 			metadata.width && metadata.width <= 2048 &&
 			metadata.height && metadata.height <= 2048
 			);
-			width = metadata.width;
-			height = metadata.height;
+			width = Number(metadata.width);
+			height = Number(metadata.height);
 		} catch (err) {
 			this.registerLogger.warn(`sharp failed: ${err}`);
 			return {
@@ -547,14 +549,20 @@ export class DriveService {
 
 		if (user && !force) {
 		// Check if there is a file with the same hash
-			const much = await this.driveFilesRepository.findOneBy({
+			const matched = await this.driveFilesRepository.findOneBy({
 				md5: info.md5,
 				userId: user.id,
 			});
 
-			if (much) {
-				this.registerLogger.info(`file with same hash is found: ${much.id}`);
-				return much;
+			if (matched) {
+				this.registerLogger.info(`file with same hash is found: ${matched.id}`);
+				if (sensitive && !matched.isSensitive) {
+					// The file is federated as sensitive for this time, but was federated as non-sensitive before.
+					// Therefore, update the file to sensitive.
+					await this.driveFilesRepository.update({ id: matched.id }, { isSensitive: true });
+					matched.isSensitive = true;
+				}
+				return matched;
 			}
 		}
 
@@ -659,7 +667,7 @@ export class DriveService {
 				file.type = info.type.mime;
 				file.storedInternal = false;
 
-				file = await this.driveFilesRepository.insert(file).then(x => this.driveFilesRepository.findOneByOrFail(x.identifiers[0]));
+				file = await this.driveFilesRepository.insertOne(file);
 			} catch (err) {
 			// duplicate key error (when already registered)
 				if (isDuplicateKeyValueError(err)) {
