@@ -1,3 +1,4 @@
+
 name: Publish Docker image (develop)
 
 on:
@@ -7,7 +8,7 @@ on:
   workflow_dispatch:
 
 env:
-  REGISTRY_IMAGE: penginn/cherrypick
+  REGISTRY_IMAGE: ghcr.io/${{ github.repository }}
 
 jobs:
   # see https://docs.docker.com/build/ci/github-actions/multi-platform/#distribute-build-across-multiple-runners
@@ -20,7 +21,7 @@ jobs:
         platform:
           - linux/amd64
           - linux/arm64
-    if: github.repository == 'penginn-0/cherrypick'
+    if: github.repository == 'yojo-art/cherrypick'
     steps:
       - name: Free Disk Space
         uses: jlumbroso/free-disk-space@main
@@ -91,6 +92,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+          tags: ${{ env.REGISTRY_IMAGE }}:develop
       - name: Create manifest list and push
         working-directory: /tmp/digests
         run: |
