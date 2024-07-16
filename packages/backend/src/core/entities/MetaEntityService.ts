@@ -68,11 +68,8 @@ export class MetaEntityService {
 			feedbackUrl: instance.feedbackUrl,
 			impressumUrl: instance.impressumUrl,
 			privacyPolicyUrl: instance.privacyPolicyUrl,
-<<<<<<< Updated upstream
-=======
 			statusUrl: instance.statusUrl,
 			inquiryUrl: instance.inquiryUrl,
->>>>>>> Stashed changes
 			disableRegistration: instance.disableRegistration,
 			emailRequiredForSignup: instance.emailRequiredForSignup,
 			enableHcaptcha: instance.enableHcaptcha,

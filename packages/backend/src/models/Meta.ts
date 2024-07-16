@@ -427,6 +427,12 @@ export class MiMeta {
 		length: 8192,
 		nullable: true,
 	})
+	public inquiryUrl: string | null;
+
+	@Column('varchar', {
+		length: 8192,
+		nullable: true,
+	})
 	public defaultLightTheme: string | null;
 
 	@Column('varchar', {

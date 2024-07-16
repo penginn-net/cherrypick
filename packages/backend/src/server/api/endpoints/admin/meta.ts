@@ -483,8 +483,6 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
-<<<<<<< Updated upstream
-=======
 			statusUrl: {
 				type: 'string',
 				optional: false, nullable: true,
@@ -493,7 +491,6 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
->>>>>>> Stashed changes
 			repositoryUrl: {
 				type: 'string',
 				optional: false, nullable: true,
