@@ -483,6 +483,17 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+<<<<<<< Updated upstream
+=======
+			statusUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			inquiryUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+>>>>>>> Stashed changes
 			repositoryUrl: {
 				type: 'string',
 				optional: false, nullable: true,
