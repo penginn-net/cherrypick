@@ -69,6 +69,9 @@ export const soundsTypes = [
 	'noizenecio/kick_gaba5',
 	'noizenecio/kick_gaba6',
 	'noizenecio/kick_gaba7',
+	'mujin/bubble',
+	'mujin/notification_1',
+	'mujin/test_notification',
 ] as const;
 
 export const operationTypes = [
@@ -129,7 +132,7 @@ export async function loadAudio(url: string, options?: { useCache?: boolean; }) 
  */
 export function playMisskeySfx(operationType: OperationType) {
 	const sound = defaultStore.state[`sound_${operationType}`];
-	if (sound.type == null || !canPlay || !navigator.userActivation.hasBeenActive) return;
+	if (sound.type == null || !canPlay || ('userActivation' in navigator && !navigator.userActivation.hasBeenActive)) return;
 
 	canPlay = false;
 	playMisskeySfxFile(sound).finally(() => {

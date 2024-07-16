@@ -16,6 +16,7 @@ import { RoleService } from '@/core/RoleService.js';
 import { UserListService } from '@/core/UserListService.js';
 
 export const meta = {
+	tags: ['lists', 'account'],
 	requireCredential: true,
 	prohibitMoved: true,
 	kind: 'write:account',
@@ -104,11 +105,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.tooManyUserLists);
 			}
 
-			const userList = await this.userListsRepository.insert({
+			const userList = await this.userListsRepository.insertOne({
 				id: this.idService.gen(),
 				userId: me.id,
 				name: ps.name,
-			} as MiUserList).then(x => this.userListsRepository.findOneByOrFail(x.identifiers[0]));
+			} as MiUserList);
 
 			const users = (await this.userListMembershipsRepository.findBy({
 				userListId: ps.listId,

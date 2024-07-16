@@ -206,9 +206,15 @@ const routes: RouteDef[] = [{
 	path: '/announcements',
 	component: page(() => import('@/pages/announcements.vue')),
 }, {
+	path: '/announcements/:announcementId',
+	component: page(() => import('@/pages/announcement.vue')),
+}, {
 	path: '/about',
 	component: page(() => import('@/pages/about.vue')),
 	hash: 'initialTab',
+}, {
+	path: '/contact',
+	component: page(() => import('@/pages/contact.vue')),
 }, {
 	path: '/about-misskey',
 	component: page(() => import('@/pages/about-misskey.vue')),
@@ -315,20 +321,6 @@ const routes: RouteDef[] = [{
 	path: '/gallery',
 	component: page(() => import('@/pages/gallery/index.vue')),
 }, {
-	path: '/channels/:channelId/edit',
-	component: page(() => import('@/pages/channel-editor.vue')),
-	loginRequired: true,
-}, {
-	path: '/channels/new',
-	component: page(() => import('@/pages/channel-editor.vue')),
-	loginRequired: true,
-}, {
-	path: '/channels/:channelId',
-	component: page(() => import('@/pages/channel.vue')),
-}, {
-	path: '/channels',
-	component: page(() => import('@/pages/channels.vue')),
-}, {
 	path: '/custom-emojis-manager',
 	component: page(() => import('@/pages/custom-emojis-manager.vue')),
 }, {
@@ -352,6 +344,10 @@ const routes: RouteDef[] = [{
 	path: '/install-extensions',
 	component: page(() => import('@/pages/install-extensions.vue')),
 	loginRequired: true,
+}, {
+	path: '/official-tags',
+	name: 'officialTags',
+	component: page(() => import('@/pages/official-tags.vue')),
 }, {
 	path: '/admin/user/:userId',
 	component: iAmModerator ? page(() => import('@/pages/admin-user.vue')) : page(() => import('@/pages/not-found.vue')),
@@ -471,6 +467,10 @@ const routes: RouteDef[] = [{
 		name: 'other-settings',
 		component: page(() => import('@/pages/admin/other-settings.vue')),
 	}, {
+		path: '/official-tags',
+		name: 'officialTags',
+		component: page(() => import('@/pages/admin/official-tags.vue')),
+	}, {
 		path: '/server-rules',
 		name: 'server-rules',
 		component: page(() => import('@/pages/admin/server-rules.vue')),
@@ -478,6 +478,14 @@ const routes: RouteDef[] = [{
 		path: '/invites',
 		name: 'invites',
 		component: page(() => import('@/pages/admin/invites.vue')),
+	}, {
+		path: '/abuse-report-notification-recipient',
+		name: 'abuse-report-notification-recipient',
+		component: page(() => import('@/pages/admin/abuse-report/notification-recipient.vue')),
+	}, {
+		path: '/system-webhook',
+		name: 'system-webhook',
+		component: page(() => import('@/pages/admin/system-webhook.vue')),
 	}, {
 		path: '/update',
 		name: 'update',

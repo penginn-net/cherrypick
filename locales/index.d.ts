@@ -763,6 +763,10 @@ export interface Locale extends ILocale {
      */
     "renoted": string;
     /**
+     * {name} にリノートしました。
+     */
+    "renotedToX": ParameterizedString<"name">;
+    /**
      * ノートを引用しました。
      */
     "quoted": string;
@@ -790,6 +794,14 @@ export interface Locale extends ILocale {
      * チャンネル内引用
      */
     "inChannelQuote": string;
+    /**
+     * チャンネルにリノート
+     */
+    "renoteToChannel": string;
+    /**
+     * 他のチャンネルにリノート
+     */
+    "renoteToOtherChannel": string;
     /**
      * ピン留めされたノート
      */
@@ -1231,7 +1243,7 @@ export interface Locale extends ILocale {
      */
     "silencedInstances": string;
     /**
-     * サイレンスしたいサーバーのホストを改行で区切って設定します。サイレンスされたサーバーに所属するアカウントはすべて「サイレンス」として扱われ、フォローがすべてリクエストになり、フォロワーでないローカルアカウントにはメンションできなくなります。ブロックしたインスタンスには影響しません。
+     * サイレンスしたいサーバーのホストを改行で区切って設定します。サイレンスされたサーバーに所属するアカウントはすべて「サイレンス」として扱われ、フォローがすべてリクエストになります。ブロックしたインスタンスには影響しません。
      */
     "silencedInstancesDescription": string;
     /**
@@ -1598,6 +1610,10 @@ export interface Locale extends ILocale {
      * フォルダーを選択
      */
     "selectFolders": string;
+    /**
+     * ファイルが選択されていません
+     */
+    "fileNotSelected": string;
     /**
      * ファイル名を変更
      */
@@ -2255,6 +2271,10 @@ export interface Locale extends ILocale {
      */
     "quoteQuestion": string;
     /**
+     * クリップボードのテキストが長いです。テキストファイルとして添付しますか？
+     */
+    "attachAsFileQuestion": string;
+    /**
      * まだチャットはありません
      */
     "noMessagesYet": string;
@@ -2374,6 +2394,10 @@ export interface Locale extends ILocale {
      * ノートのアクションをホバー時のみ表示する
      */
     "showNoteActionsOnlyHover": string;
+    /**
+     * ノートのリアクション数を表示する
+     */
+    "showReactionsCount": string;
     /**
      * 履歴はありません
      */
@@ -3756,6 +3780,10 @@ export interface Locale extends ILocale {
      */
     "noMaintainerInformationWarning": string;
     /**
+     * 問い合わせ先URLが設定されていません。
+     */
+    "noInquiryUrlWarning": string;
+    /**
      * Botプロテクションが設定されていません。
      */
     "noBotProtectionWarning": string;
@@ -4520,9 +4548,13 @@ export interface Locale extends ILocale {
      */
     "thisPostMayBeAnnoyingIgnore": string;
     /**
-     * 見たことのあるリノートを省略して表示
+     * リノートのスマート省略
      */
     "collapseRenotes": string;
+    /**
+     * リアクションやリノートをしたことがあるノートをたたんで表示します。
+     */
+    "collapseRenotesDescription": string;
     /**
      * 特定のMFM構文を含むノートを省略して表示
      */
@@ -5116,6 +5148,10 @@ export interface Locale extends ILocale {
      */
     "mutualFollow": string;
     /**
+     * フォロー中またはフォロワー
+     */
+    "followingOrFollower": string;
+    /**
      * ファイル付きのみ
      */
     "fileAttachedOnly": string;
@@ -5320,6 +5356,14 @@ export interface Locale extends ILocale {
      */
     "replaying": string;
     /**
+     * リプレイを終了
+     */
+    "endReplay": string;
+    /**
+     * リプレイデータをコピー
+     */
+    "copyReplayData": string;
+    /**
      * ランキング
      */
     "ranking": string;
@@ -5392,6 +5436,14 @@ export interface Locale extends ILocale {
      */
     "noDescription": string;
     /**
+     * フォローの際常に確認する
+     */
+    "alwaysConfirmFollow": string;
+    /**
+     * お問い合わせ
+     */
+    "inquiry": string;
+    /**
      * 未読の通知の数を表示する
      */
     "showUnreadNotificationsCount": string;
@@ -5415,6 +5467,24 @@ export interface Locale extends ILocale {
      * プロフィールを翻訳する
      */
     "translateProfile": string;
+    "_official_tag": {
+        /**
+         * 公式タグ
+         */
+        "title": string;
+        /**
+         * 公式タグ
+         */
+        "navbar": string;
+        /**
+         * 優先度の値が小さいものが上に表示されます
+         */
+        "adminTopInfo": string;
+    };
+    /**
+     * マスコット画像のリンク
+     */
+    "mascotImageUrl": string;
     "_nsfwOpenBehavior": {
         /**
          * タップして開く
@@ -5471,11 +5541,77 @@ export interface Locale extends ILocale {
          */
         "direct": string;
     };
+    "_delivery": {
+        /**
+         * 配信状態
+         */
+        "status": string;
+        /**
+         * 配信停止
+         */
+        "stop": string;
+        /**
+         * 配信再開
+         */
+        "resume": string;
+        "_type": {
+            /**
+             * 配信中
+             */
+            "none": string;
+            /**
+             * 手動停止中
+             */
+            "manuallySuspended": string;
+            /**
+             * サーバー削除のため停止中
+             */
+            "goneSuspended": string;
+            /**
+             * サーバー応答なしのため停止中
+             */
+            "autoSuspendedForNotResponding": string;
+        };
+    };
     "_bubbleGame": {
         /**
          * 遊び方
          */
         "howToPlay": string;
+        /**
+         * ホールド
+         */
+        "hold": string;
+        "_score": {
+            /**
+             * スコア
+             */
+            "score": string;
+            /**
+             * 稼いだ金額
+             */
+            "scoreYen": string;
+            /**
+             * ハイスコア
+             */
+            "highScore": string;
+            /**
+             * 最大チェーン数
+             */
+            "maxChain": string;
+            /**
+             * {yen}円
+             */
+            "yen": ParameterizedString<"yen">;
+            /**
+             * {qty}個分
+             */
+            "estimatedQty": ParameterizedString<"qty">;
+            /**
+             * おにぎり {onigiriQtyWithUnit}
+             */
+            "scoreSweets": ParameterizedString<"onigiriQtyWithUnit">;
+        };
         "_howToPlay": {
             /**
              * 位置を調整してハコにモノを落とします。
@@ -6053,6 +6189,10 @@ export interface Locale extends ILocale {
          * グローバルタイムラインでは、接続している他のすべてのサーバーからの投稿を見られます。
          */
         "global": string;
+        /**
+         * メディアタイムラインでは、グローバルタイムラインからファイル付きのみが表示されます。
+         */
+        "media": string;
     };
     "_serverRules": {
         /**
@@ -6207,6 +6347,18 @@ export interface Locale extends ILocale {
          * 有効にすると、タイムラインがキャッシュされていない場合にDBへ追加で問い合わせを行うフォールバック処理を行います。無効にすると、フォールバック処理を行わないことでさらにサーバーの負荷を軽減することができますが、タイムラインが取得できる範囲に制限が生じます。
          */
         "fanoutTimelineDbFallbackDescription": string;
+        /**
+         * 問い合わせ先URL
+         */
+        "inquiryUrl": string;
+        /**
+         * サーバー運営者へのお問い合わせフォームのURLや、運営者の連絡先等が記載されたWebページのURLを指定します。
+         */
+        "inquiryUrlDescription": string;
+        /**
+         * 空欄かデフォルト値(/assets/ai.png)の場合タイムラインが表示されます
+         */
+        "mascotImageUrlDescription": string;
     };
     "_accountMigration": {
         /**
@@ -7010,6 +7162,20 @@ export interface Locale extends ILocale {
                  */
                 "description": string;
             };
+            "_setNameToYojo": {
+                /**
+                 * ロリータコンプレックス
+                 */
+                "title": string;
+                /**
+                 * 名前を 幼女 に設定した
+                 */
+                "description": string;
+                /**
+                 * これであなたもロリコン
+                 */
+                "flavor": string;
+            };
             "_passedSinceAccountCreated1": {
                 /**
                  * 一周年
@@ -7133,6 +7299,62 @@ export interface Locale extends ILocale {
                 "description": string;
                 /**
                  * これくらいの　おべんとばこに　🤯　🤯　ちょっとつめて
+                 */
+                "flavor": string;
+            };
+            "_ohayoujo1": {
+                /**
+                 * 今日も一日！
+                 */
+                "title": string;
+                /**
+                 * おはようようじょー！と投稿した
+                 */
+                "description": string;
+                /**
+                 * おはようじょー！
+                 */
+                "flavor": string;
+            };
+            "_ohayoujo7": {
+                /**
+                 * 元気いっぱい！
+                 */
+                "title": string;
+                /**
+                 * おはようようじょー！と7日投稿した
+                 */
+                "description": string;
+                /**
+                 * おはようじょー！
+                 */
+                "flavor": string;
+            };
+            "_ohayoujo30": {
+                /**
+                 * 笑顔満点
+                 */
+                "title": string;
+                /**
+                 * おはようようじょー！と30日投稿した
+                 */
+                "description": string;
+                /**
+                 * おはようじょー！
+                 */
+                "flavor": string;
+            };
+            "_ohayoujo365": {
+                /**
+                 * 皆勤賞
+                 */
+                "title": string;
+                /**
+                 * おはようようじょー！と365日投稿した
+                 */
+                "description": string;
+                /**
+                 * おはようじょー！
                  */
                 "flavor": string;
             };
@@ -7297,6 +7519,10 @@ export interface Locale extends ILocale {
              */
             "canEditNote": string;
             /**
+             * ノート内の最大メンション数
+             */
+            "mentionMax": string;
+            /**
              * サーバー招待コードの発行
              */
             "canInvite": string;
@@ -7324,6 +7550,10 @@ export interface Locale extends ILocale {
              * ドライブ容量
              */
             "driveCapacity": string;
+            /**
+             * ファイルサイズ上限
+             */
+            "fileSizeLimit": string;
             /**
              * ファイルにNSFWを常に付与
              */
@@ -7391,6 +7621,10 @@ export interface Locale extends ILocale {
         };
         "_condition": {
             /**
+             * マニュアルロールにアサイン済み
+             */
+            "roleAssignedTo": string;
+            /**
              * ローカルユーザー
              */
             "isLocal": string;
@@ -7398,6 +7632,26 @@ export interface Locale extends ILocale {
              * リモートユーザー
              */
             "isRemote": string;
+            /**
+             * 猫ユーザー
+             */
+            "isCat": string;
+            /**
+             * botユーザー
+             */
+            "isBot": string;
+            /**
+             * サスペンド済みユーザー
+             */
+            "isSuspended": string;
+            /**
+             * 鍵アカウントユーザー
+             */
+            "isLocked": string;
+            /**
+             * 「アカウントを見つけやすくする」が有効なユーザー
+             */
+            "isExplorable": string;
             /**
              * アカウント作成から～以内
              */
@@ -7667,6 +7921,10 @@ export interface Locale extends ILocale {
          * ソースを表示
          */
         "viewSource": string;
+        /**
+         * ログを表示
+         */
+        "viewLog": string;
     };
     "_preferencesBackups": {
         /**
@@ -9044,10 +9302,6 @@ export interface Locale extends ILocale {
          */
         "read:admin:show-user": string;
         /**
-         * ユーザーのプライベートな情報を見る
-         */
-        "read:admin:show-users": string;
-        /**
          * ユーザーを凍結する
          */
         "write:admin:suspend-user": string;
@@ -9187,6 +9441,10 @@ export interface Locale extends ILocale {
          * 違反を報告する
          */
         "write:report-abuse": string;
+        /**
+         * 公式タグを編集する
+         */
+        "write:admin:official-tags": string;
     };
     "_auth": {
         /**
@@ -9401,6 +9659,10 @@ export interface Locale extends ILocale {
          * 今日誕生日のユーザー
          */
         "birthdayFollowings": string;
+        /**
+         * マスコット画像
+         */
+        "mascot": string;
     };
     "_cw": {
         /**
@@ -9867,6 +10129,10 @@ export interface Locale extends ILocale {
          * 説明
          */
         "summary": string;
+        /**
+         * 非公開に設定するとプロフィールに表示されなくなりますが、URLを知っている人は引き続きアクセスできます。
+         */
+        "visibilityDescription": string;
     };
     "_pages": {
         /**
@@ -10166,6 +10432,10 @@ export interface Locale extends ILocale {
          */
         "reactedBySomeUsers": ParameterizedString<"n">;
         /**
+         * {n}人がいいねしました
+         */
+        "likedBySomeUsers": ParameterizedString<"n">;
+        /**
          * {n}人がリノートしました
          */
         "renotedBySomeUsers": ParameterizedString<"n">;
@@ -10173,6 +10443,10 @@ export interface Locale extends ILocale {
          * {n}人にフォローされました
          */
         "followedBySomeUsers": ParameterizedString<"n">;
+        /**
+         * 通知の履歴をリセットする
+         */
+        "flushNotification": string;
         "_types": {
             /**
              * すべて
@@ -10263,6 +10537,10 @@ export interface Locale extends ILocale {
          * カラムを追加
          */
         "addColumn": string;
+        /**
+         * 新着ノート通知の設定
+         */
+        "newNoteNotificationSettings": string;
         /**
          * カラムの設定
          */
@@ -10406,6 +10684,10 @@ export interface Locale extends ILocale {
          */
         "createWebhook": string;
         /**
+         * Webhookを編集
+         */
+        "modifyWebhook": string;
+        /**
          * 名前
          */
         "name": string;
@@ -10450,6 +10732,72 @@ export interface Locale extends ILocale {
              * メンションされたとき
              */
             "mention": string;
+        };
+        "_systemEvents": {
+            /**
+             * ユーザーから通報があったとき
+             */
+            "abuseReport": string;
+            /**
+             * ユーザーからの通報を処理したとき
+             */
+            "abuseReportResolved": string;
+        };
+        /**
+         * Webhookを削除しますか？
+         */
+        "deleteConfirm": string;
+    };
+    "_abuseReport": {
+        "_notificationRecipient": {
+            /**
+             * 通報の通知先を追加
+             */
+            "createRecipient": string;
+            /**
+             * 通報の通知先を編集
+             */
+            "modifyRecipient": string;
+            /**
+             * 通知先の種類
+             */
+            "recipientType": string;
+            "_recipientType": {
+                /**
+                 * メール
+                 */
+                "mail": string;
+                /**
+                 * Webhook
+                 */
+                "webhook": string;
+                "_captions": {
+                    /**
+                     * モデレーター権限を持つユーザーのメールアドレスに通知を送ります(通報を受けた時のみ)
+                     */
+                    "mail": string;
+                    /**
+                     * 指定したSystemWebhookに通知を送ります(通報を受けた時と通報を解決した時にそれぞれ発信)
+                     */
+                    "webhook": string;
+                };
+            };
+            /**
+             * キーワード
+             */
+            "keywords": string;
+            /**
+             * 通知先ユーザー
+             */
+            "notifiedUser": string;
+            /**
+             * 使用するWebhook
+             */
+            "notifiedWebhook": string;
+            /**
+             * 通知先を削除しますか？
+             */
+            "deleteConfirm": string;
         };
     };
     "_moderationLogTypes": {
@@ -10498,7 +10846,7 @@ export interface Locale extends ILocale {
          */
         "updateServerSettings": string;
         /**
-         * モデレーションノート更新
+         * ユーザーのモデレーションノート更新
          */
         "updateUserNote": string;
         /**
@@ -10545,6 +10893,10 @@ export interface Locale extends ILocale {
          * リモートサーバーを再開
          */
         "unsuspendRemoteInstance": string;
+        /**
+         * リモートサーバーのモデレーションノート更新
+         */
+        "updateRemoteInstanceNote": string;
         /**
          * ファイルをセンシティブ付与
          */
@@ -10593,6 +10945,34 @@ export interface Locale extends ILocale {
          * ユーザーのバナーを解除
          */
         "unsetUserBanner": string;
+        /**
+         * SystemWebhookを作成
+         */
+        "createSystemWebhook": string;
+        /**
+         * SystemWebhookを更新
+         */
+        "updateSystemWebhook": string;
+        /**
+         * SystemWebhookを削除
+         */
+        "deleteSystemWebhook": string;
+        /**
+         * 通報の通知先を作成
+         */
+        "createAbuseReportNotificationRecipient": string;
+        /**
+         * 通報の通知先を更新
+         */
+        "updateAbuseReportNotificationRecipient": string;
+        /**
+         * 通報の通知先を削除
+         */
+        "deleteAbuseReportNotificationRecipient": string;
+        /**
+         * 公式タグ一覧を更新
+         */
+        "updateOfficialTags": string;
     };
     "_fileViewer": {
         /**
@@ -10985,6 +11365,14 @@ export interface Locale extends ILocale {
          * 変則なし
          */
         "disallowIrregularRules": string;
+        /**
+         * 盤面に行・列番号を表示
+         */
+        "showBoardLabels": string;
+        /**
+         * 石をアイコンにする
+         */
+        "useAvatarAsStone": string;
     };
     "_offlineScreen": {
         /**
@@ -11177,7 +11565,7 @@ export interface Locale extends ILocale {
             /**
              * CW付きを除外する
              */
-            "toggleNsfw": string;
+            "toggleCW": string;
             /**
              * リプライを除外する
              */
@@ -11190,6 +11578,10 @@ export interface Locale extends ILocale {
              * 高度な検索を有効にする
              */
             "toggleAdvancedSearch": string;
+            /**
+             * 引用を除外する
+             */
+            "toggleQuote": string;
         };
         "_specifyDate": {
             /**
@@ -11206,6 +11598,28 @@ export interface Locale extends ILocale {
              * その他の設定
              */
             "other": string;
+        };
+        "_fileNsfwOption": {
+            /**
+             * 添付ファイルのセンシティブ状態
+             */
+            "title": string;
+            /**
+             * フィルタしない
+             */
+            "combined": string;
+            /**
+             * 除外
+             */
+            "withOutSensitive": string;
+            /**
+             * 含むもの
+             */
+            "includeSensitive": string;
+            /**
+             * 全てセンシティブ
+             */
+            "sensitiveOnly": string;
         };
     };
     "_searchOrApShow": {

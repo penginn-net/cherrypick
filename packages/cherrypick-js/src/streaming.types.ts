@@ -42,6 +42,7 @@ export type Channels = {
 			unreadNotification: (payload: Notification) => void;
 			unreadMention: (payload: Note['id']) => void;
 			readAllUnreadMentions: () => void;
+			notificationFlushed: () => void;
 			unreadSpecifiedNote: (payload: Note['id']) => void;
 			readAllUnreadSpecifiedNotes: () => void;
 			readAllMessagingMessages: () => void;
@@ -141,7 +142,7 @@ export type Channels = {
 	};
 	hashtag: {
 		params: {
-			q?: string;
+			q?: string[][];
 		};
 		events: {
 			note: (payload: Note) => void;

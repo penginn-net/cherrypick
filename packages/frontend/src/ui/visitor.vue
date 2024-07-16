@@ -20,7 +20,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkA to="/" class="link" activeClass="active"><i class="ti ti-home icon"></i> {{ i18n.ts.home }}</MkA>
 				<MkA v-if="isTimelineAvailable" to="/timeline" class="link" activeClass="active"><i class="ti ti-message icon"></i> {{ i18n.ts.timeline }}</MkA>
 				<MkA to="/explore" class="link" activeClass="active"><i class="ti ti-hash icon"></i> {{ i18n.ts.explore }}</MkA>
-				<MkA to="/channels" class="link" activeClass="active"><i class="ti ti-device-tv icon"></i> {{ i18n.ts.channel }}</MkA>
 			</div>
 			<div v-else-if="narrow === true" class="narrow">
 				<button v-vibrate="defaultStore.state.vibrateSystem ? 5 : []" class="menu _button" @click="showMenu = true">
@@ -53,7 +52,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkA v-if="isTimelineAvailable" to="/timeline" class="link" activeClass="active"><i class="ti ti-message icon"></i>{{ i18n.ts.timeline }}</MkA>
 			<MkA to="/explore" class="link" activeClass="active"><i class="ti ti-hash icon"></i>{{ i18n.ts.explore }}</MkA>
 			<MkA to="/announcements" class="link" activeClass="active"><i class="ti ti-speakerphone icon"></i>{{ i18n.ts.announcements }}</MkA>
-			<MkA to="/channels" class="link" activeClass="active"><i class="ti ti-device-tv icon"></i>{{ i18n.ts.channel }}</MkA>
 			<div class="divider"></div>
 			<MkA to="/pages" class="link" activeClass="active"><i class="ti ti-news icon"></i>{{ i18n.ts.pages }}</MkA>
 			<MkA to="/play" class="link" activeClass="active"><i class="ti ti-player-play icon"></i>Play</MkA>
@@ -74,7 +72,6 @@ import * as Misskey from 'cherrypick-js';
 import XCommon from './_common_/common.vue';
 import { instanceName } from '@/config.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
 import { instance } from '@/instance.js';
 import XSigninDialog from '@/components/MkSigninDialog.vue';
 import XSignupDialog from '@/components/MkSignupDialog.vue';
@@ -114,7 +111,6 @@ const isTimelineAvailable = ref(instance.policies.ltlAvailable || instance.polic
 const showMenu = ref(false);
 const isDesktop = ref(window.innerWidth >= DESKTOP_THRESHOLD);
 const narrow = ref(window.innerWidth < 1280);
-const meta = ref<Misskey.entities.MetaResponse>();
 
 const keymap = computed(() => {
 	return {
@@ -126,10 +122,6 @@ const keymap = computed(() => {
 			mainRouter.push('/search');
 		},
 	};
-});
-
-misskeyApi('meta', { detail: true }).then(res => {
-	meta.value = res;
 });
 
 function signin() {

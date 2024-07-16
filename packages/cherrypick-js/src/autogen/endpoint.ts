@@ -10,6 +10,15 @@ import type {
 	AdminAbuseReportResolverUpdateRequest,
 	AdminAbuseUserReportsRequest,
 	AdminAbuseUserReportsResponse,
+	AdminAbuseReportNotificationRecipientListRequest,
+	AdminAbuseReportNotificationRecipientListResponse,
+	AdminAbuseReportNotificationRecipientShowRequest,
+	AdminAbuseReportNotificationRecipientShowResponse,
+	AdminAbuseReportNotificationRecipientCreateRequest,
+	AdminAbuseReportNotificationRecipientCreateResponse,
+	AdminAbuseReportNotificationRecipientUpdateRequest,
+	AdminAbuseReportNotificationRecipientUpdateResponse,
+	AdminAbuseReportNotificationRecipientDeleteRequest,
 	AdminAccountsCreateRequest,
 	AdminAccountsCreateResponse,
 	AdminAccountsDeleteRequest,
@@ -41,7 +50,9 @@ import type {
 	AdminDriveShowFileResponse,
 	AdminEmojiAddAliasesBulkRequest,
 	AdminEmojiAddRequest,
+	AdminEmojiAddResponse,
 	AdminEmojiAddsRequest,
+	AdminEmojiAddsResponse,
 	AdminEmojiCopyRequest,
 	AdminEmojiCopyResponse,
 	AdminEmojiDeleteBulkRequest,
@@ -107,8 +118,19 @@ import type {
 	AdminRolesUpdateDefaultPoliciesRequest,
 	AdminRolesUsersRequest,
 	AdminRolesUsersResponse,
+	AdminSystemWebhookCreateRequest,
+	AdminSystemWebhookCreateResponse,
+	AdminSystemWebhookDeleteRequest,
+	AdminSystemWebhookListRequest,
+	AdminSystemWebhookListResponse,
+	AdminSystemWebhookShowRequest,
+	AdminSystemWebhookShowResponse,
+	AdminSystemWebhookUpdateRequest,
+	AdminSystemWebhookUpdateResponse,
 	AnnouncementsRequest,
 	AnnouncementsResponse,
+	AnnouncementsShowRequest,
+	AnnouncementsShowResponse,
 	AntennasCreateRequest,
 	AntennasCreateResponse,
 	AntennasDeleteRequest,
@@ -140,26 +162,6 @@ import type {
 	BlockingDeleteResponse,
 	BlockingListRequest,
 	BlockingListResponse,
-	ChannelsCreateRequest,
-	ChannelsCreateResponse,
-	ChannelsFeaturedResponse,
-	ChannelsFollowRequest,
-	ChannelsFollowedRequest,
-	ChannelsFollowedResponse,
-	ChannelsOwnedRequest,
-	ChannelsOwnedResponse,
-	ChannelsShowRequest,
-	ChannelsShowResponse,
-	ChannelsTimelineRequest,
-	ChannelsTimelineResponse,
-	ChannelsUnfollowRequest,
-	ChannelsUpdateRequest,
-	ChannelsUpdateResponse,
-	ChannelsFavoriteRequest,
-	ChannelsUnfavoriteRequest,
-	ChannelsMyFavoritesResponse,
-	ChannelsSearchRequest,
-	ChannelsSearchResponse,
 	ChartsActiveUsersRequest,
 	ChartsActiveUsersResponse,
 	ChartsApRequestRequest,
@@ -453,6 +455,8 @@ import type {
 	NotesUserListTimelineRequest,
 	NotesUserListTimelineResponse,
 	NotificationsCreateRequest,
+	OfficialTagsShowResponse,
+	OfficialTagsUpdateRequest,
 	PagePushRequest,
 	PagesCreateRequest,
 	PagesCreateResponse,
@@ -605,6 +609,11 @@ export type Endpoints = {
 	'admin/abuse-report-resolver/delete': { req: AdminAbuseReportResolverDeleteRequest; res: EmptyResponse };
 	'admin/abuse-report-resolver/update': { req: AdminAbuseReportResolverUpdateRequest; res: EmptyResponse };
 	'admin/abuse-user-reports': { req: AdminAbuseUserReportsRequest; res: AdminAbuseUserReportsResponse };
+	'admin/abuse-report/notification-recipient/list': { req: AdminAbuseReportNotificationRecipientListRequest; res: AdminAbuseReportNotificationRecipientListResponse };
+	'admin/abuse-report/notification-recipient/show': { req: AdminAbuseReportNotificationRecipientShowRequest; res: AdminAbuseReportNotificationRecipientShowResponse };
+	'admin/abuse-report/notification-recipient/create': { req: AdminAbuseReportNotificationRecipientCreateRequest; res: AdminAbuseReportNotificationRecipientCreateResponse };
+	'admin/abuse-report/notification-recipient/update': { req: AdminAbuseReportNotificationRecipientUpdateRequest; res: AdminAbuseReportNotificationRecipientUpdateResponse };
+	'admin/abuse-report/notification-recipient/delete': { req: AdminAbuseReportNotificationRecipientDeleteRequest; res: EmptyResponse };
 	'admin/accounts/create': { req: AdminAccountsCreateRequest; res: AdminAccountsCreateResponse };
 	'admin/accounts/delete': { req: AdminAccountsDeleteRequest; res: EmptyResponse };
 	'admin/accounts/find-by-email': { req: AdminAccountsFindByEmailRequest; res: AdminAccountsFindByEmailResponse };
@@ -628,8 +637,8 @@ export type Endpoints = {
 	'admin/drive/files': { req: AdminDriveFilesRequest; res: AdminDriveFilesResponse };
 	'admin/drive/show-file': { req: AdminDriveShowFileRequest; res: AdminDriveShowFileResponse };
 	'admin/emoji/add-aliases-bulk': { req: AdminEmojiAddAliasesBulkRequest; res: EmptyResponse };
-	'admin/emoji/add': { req: AdminEmojiAddRequest; res: EmptyResponse };
-	'admin/emoji/adds': { req: AdminEmojiAddsRequest; res: EmptyResponse };
+	'admin/emoji/add': { req: AdminEmojiAddRequest; res: AdminEmojiAddResponse };
+	'admin/emoji/adds': { req: AdminEmojiAddsRequest; res: AdminEmojiAddsResponse };
 	'admin/emoji/copy': { req: AdminEmojiCopyRequest; res: AdminEmojiCopyResponse };
 	'admin/emoji/delete-bulk': { req: AdminEmojiDeleteBulkRequest; res: EmptyResponse };
 	'admin/emoji/delete': { req: AdminEmojiDeleteRequest; res: EmptyResponse };
@@ -682,7 +691,13 @@ export type Endpoints = {
 	'admin/roles/unassign': { req: AdminRolesUnassignRequest; res: EmptyResponse };
 	'admin/roles/update-default-policies': { req: AdminRolesUpdateDefaultPoliciesRequest; res: EmptyResponse };
 	'admin/roles/users': { req: AdminRolesUsersRequest; res: AdminRolesUsersResponse };
+	'admin/system-webhook/create': { req: AdminSystemWebhookCreateRequest; res: AdminSystemWebhookCreateResponse };
+	'admin/system-webhook/delete': { req: AdminSystemWebhookDeleteRequest; res: EmptyResponse };
+	'admin/system-webhook/list': { req: AdminSystemWebhookListRequest; res: AdminSystemWebhookListResponse };
+	'admin/system-webhook/show': { req: AdminSystemWebhookShowRequest; res: AdminSystemWebhookShowResponse };
+	'admin/system-webhook/update': { req: AdminSystemWebhookUpdateRequest; res: AdminSystemWebhookUpdateResponse };
 	'announcements': { req: AnnouncementsRequest; res: AnnouncementsResponse };
+	'announcements/show': { req: AnnouncementsShowRequest; res: AnnouncementsShowResponse };
 	'antennas/create': { req: AntennasCreateRequest; res: AntennasCreateResponse };
 	'antennas/delete': { req: AntennasDeleteRequest; res: EmptyResponse };
 	'antennas/list': { req: EmptyRequest; res: AntennasListResponse };
@@ -700,19 +715,6 @@ export type Endpoints = {
 	'blocking/create': { req: BlockingCreateRequest; res: BlockingCreateResponse };
 	'blocking/delete': { req: BlockingDeleteRequest; res: BlockingDeleteResponse };
 	'blocking/list': { req: BlockingListRequest; res: BlockingListResponse };
-	'channels/create': { req: ChannelsCreateRequest; res: ChannelsCreateResponse };
-	'channels/featured': { req: EmptyRequest; res: ChannelsFeaturedResponse };
-	'channels/follow': { req: ChannelsFollowRequest; res: EmptyResponse };
-	'channels/followed': { req: ChannelsFollowedRequest; res: ChannelsFollowedResponse };
-	'channels/owned': { req: ChannelsOwnedRequest; res: ChannelsOwnedResponse };
-	'channels/show': { req: ChannelsShowRequest; res: ChannelsShowResponse };
-	'channels/timeline': { req: ChannelsTimelineRequest; res: ChannelsTimelineResponse };
-	'channels/unfollow': { req: ChannelsUnfollowRequest; res: EmptyResponse };
-	'channels/update': { req: ChannelsUpdateRequest; res: ChannelsUpdateResponse };
-	'channels/favorite': { req: ChannelsFavoriteRequest; res: EmptyResponse };
-	'channels/unfavorite': { req: ChannelsUnfavoriteRequest; res: EmptyResponse };
-	'channels/my-favorites': { req: EmptyRequest; res: ChannelsMyFavoritesResponse };
-	'channels/search': { req: ChannelsSearchRequest; res: ChannelsSearchResponse };
 	'charts/active-users': { req: ChartsActiveUsersRequest; res: ChartsActiveUsersResponse };
 	'charts/ap-request': { req: ChartsApRequestRequest; res: ChartsApRequestResponse };
 	'charts/drive': { req: ChartsDriveRequest; res: ChartsDriveResponse };
@@ -903,8 +905,11 @@ export type Endpoints = {
 	'notes/unrenote': { req: NotesUnrenoteRequest; res: EmptyResponse };
 	'notes/user-list-timeline': { req: NotesUserListTimelineRequest; res: NotesUserListTimelineResponse };
 	'notifications/create': { req: NotificationsCreateRequest; res: EmptyResponse };
+	'notifications/flush': { req: EmptyRequest; res: EmptyResponse };
 	'notifications/mark-all-as-read': { req: EmptyRequest; res: EmptyResponse };
 	'notifications/test-notification': { req: EmptyRequest; res: EmptyResponse };
+	'official-tags/show': { req: EmptyRequest; res: OfficialTagsShowResponse };
+	'official-tags/update': { req: OfficialTagsUpdateRequest; res: EmptyResponse };
 	'page-push': { req: PagePushRequest; res: EmptyResponse };
 	'pages/create': { req: PagesCreateRequest; res: PagesCreateResponse };
 	'pages/delete': { req: PagesDeleteRequest; res: EmptyResponse };

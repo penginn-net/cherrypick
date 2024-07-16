@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkSpacer :contentMax="800">
 		<MkHorizontalSwipe v-model:tab="src" :tabs="$i ? headerTabs : headerTabsWhenNotLogin">
 			<div :key="src" ref="rootEl" v-hotkey.global="keymap">
-				<MkInfo v-if="['home', 'local', 'social', 'global'].includes(src) && !defaultStore.reactiveState.timelineTutorials.value[src]" style="margin-bottom: var(--margin);" closable @close="closeTutorial()">
+				<MkInfo v-if="['home', 'local', 'social', 'global','media'].includes(src) && !defaultStore.reactiveState.timelineTutorials.value[src]" style="margin-bottom: var(--margin);" closable @close="closeTutorial()">
 					{{ i18n.ts._timelineDescription[src] }}
 				</MkInfo>
 				<MkPostForm v-if="defaultStore.reactiveState.showFixedPostForm.value" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--margin);" :autofocus="false"/>
@@ -71,7 +71,7 @@ import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { $i } from '@/account.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
-import { antennasCache, userListsCache } from '@/cache.js';
+import { antennasCache, userListsCache, favoritedChannelsCache } from '@/cache.js';
 import { globalEvents } from '@/events.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { deepMerge } from '@/scripts/merge.js';
@@ -102,7 +102,7 @@ const rootEl = shallowRef<HTMLElement>();
 
 const queue = ref(0);
 const srcWhenNotSignin = ref<'local' | 'global'>(isLocalTimelineAvailable ? 'local' : 'global');
-const src = computed<'home' | 'local' | 'social' | 'global' | `list:${string}`>({
+const src = computed<'home' | 'local' | 'media' | 'social' | 'global' | `list:${string}`>({
 	get: () => ($i ? defaultStore.reactiveState.tl.value.src : srcWhenNotSignin.value),
 	set: (x) => saveSrc(x),
 });
@@ -233,9 +233,7 @@ async function chooseAntenna(ev: MouseEvent): Promise<void> {
 }
 
 async function chooseChannel(ev: MouseEvent): Promise<void> {
-	const channels = await misskeyApi('channels/my-favorites', {
-		limit: 100,
-	});
+	const channels = await favoritedChannelsCache.fetch();
 	const items: MenuItem[] = [
 		...channels.map(channel => {
 			const lastReadedAt = miLocalStorage.getItemAsJson(`channelLastReadedAt:${channel.id}`) ?? null;
@@ -259,7 +257,7 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
-function saveSrc(newSrc: 'home' | 'local' | 'social' | 'global' | `list:${string}`): void {
+function saveSrc(newSrc: 'home' | 'local' | 'media' | 'social' | 'global' | `list:${string}`): void {
 	const out = deepMerge({ src: newSrc }, defaultStore.state.tl);
 
 	if (newSrc.startsWith('userList:')) {
@@ -294,7 +292,7 @@ function focus(): void {
 }
 
 function closeTutorial(): void {
-	if (!['home', 'local', 'social', 'global'].includes(src.value)) return;
+	if (!['home', 'local', 'social', 'global', 'media'].includes(src.value)) return;
 	const before = defaultStore.state.timelineTutorials;
 	before[src.value] = true;
 	defaultStore.set('timelineTutorials', before);
@@ -389,12 +387,12 @@ const headerTabs = computed(() => [...(defaultStore.reactiveState.pinnedUserList
 	title: i18n.ts._timelines.global,
 	icon: 'ti ti-world',
 	iconOnly: true,
-}, ...(defaultStore.state.enableMediaTimeline ? [{
+}] : []), ...(isGlobalTimelineAvailable && defaultStore.state.enableGlobalTimeline ? [{
 	key: 'media',
 	title: i18n.ts._timelines.media,
 	icon: 'ti ti-photo',
 	iconOnly: true,
-}] : [])] : []), ...(defaultStore.state.enableListTimeline ? [{
+}] : []), ...(defaultStore.state.enableListTimeline ? [{
 	icon: 'ti ti-list',
 	title: i18n.ts.lists,
 	iconOnly: true,
@@ -428,7 +426,7 @@ const headerTabsWhenNotLogin = computed(() => [
 
 definePageMetadata(() => ({
 	title: i18n.ts.timeline,
-	icon: src.value === 'local' ? 'ti ti-planet' : src.value === 'social' ? 'ti ti-universe' : src.value === 'global' ? 'ti ti-world' : 'ti ti-home',
+	icon: src.value === 'local' ? 'ti ti-planet' : src.value === 'social' ? 'ti ti-universe' : src.value === 'global' ? 'ti ti-world' : src.value === 'media' ? 'ti ti-photo' : 'ti ti-home',
 }));
 </script>
 

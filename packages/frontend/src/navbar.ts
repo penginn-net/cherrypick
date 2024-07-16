@@ -120,11 +120,6 @@ export const navbarItemDef = reactive({
 		show: computed(() => $i != null),
 		to: '/my/clips',
 	},
-	channels: {
-		title: i18n.ts.channel,
-		icon: 'ti ti-device-tv',
-		to: '/channels',
-	},
 	achievements: {
 		title: i18n.ts.achievements,
 		icon: 'ti ti-medal',
@@ -135,6 +130,11 @@ export const navbarItemDef = reactive({
 		title: 'CherryPick Games',
 		icon: 'ti ti-device-gamepad',
 		to: '/games',
+	},
+	official_tags: {
+		title: i18n.ts._official_tag.navbar,
+		icon: 'ti ti-bookmarks',
+		to: '/official-tags',
 	},
 	ui: {
 		title: i18n.ts.switchUi,

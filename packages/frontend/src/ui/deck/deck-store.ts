@@ -9,6 +9,7 @@ import { notificationTypes } from 'cherrypick-js';
 import { Storage } from '@/pizzax.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { deepClone } from '@/scripts/clone.js';
+import { SoundStore } from '@/store.js';
 
 type ColumnWidget = {
 	name: string;
@@ -18,7 +19,7 @@ type ColumnWidget = {
 
 export type Column = {
 	id: string;
-	type: 'main' | 'widgets' | 'notifications' | 'tl' | 'antenna' | 'channel' | 'list' | 'mentions' | 'direct';
+	type: 'main' | 'widgets' | 'notifications' | 'tl' | 'antenna' | 'list' | 'mentions' | 'direct';
 	name: string | null;
 	width: number;
 	widgets?: ColumnWidget[];
@@ -34,6 +35,7 @@ export type Column = {
 	withReplies?: boolean;
 	onlyFiles?: boolean;
 	onlyCats?: boolean;
+	soundSetting: SoundStore;
 };
 
 export const deckStore = markRaw(new Storage('deck', {

@@ -56,6 +56,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkSwitch>
 						</MkFolder>
 
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.mentionMax, 'mentionLimit'])">
+							<template #label>{{ i18n.ts._role._options.mentionMax }}</template>
+							<template #suffix>{{ policies.mentionLimit }}</template>
+							<MkInput v-model="policies.mentionLimit" type="number">
+							</MkInput>
+						</MkFolder>
+
 						<MkFolder v-if="matchQuery([i18n.ts._role._options.canInvite, 'canInvite'])">
 							<template #label>{{ i18n.ts._role._options.canInvite }}</template>
 							<template #suffix>{{ policies.canInvite ? i18n.ts.yes : i18n.ts.no }}</template>
@@ -212,6 +219,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label>{{ i18n.ts._role._options.avatarDecorationLimit }}</template>
 							<template #suffix>{{ policies.avatarDecorationLimit }}</template>
 							<MkInput v-model="policies.avatarDecorationLimit" type="number" :min="0">
+							</MkInput>
+						</MkFolder>
+						<MkFolder v-if="matchQuery([i18n.ts._role._options.fileSizeLimit, 'fileSizeLimit'])">
+							<template #label>{{ i18n.ts._role._options.fileSizeLimit }}</template>
+							<template #suffix>{{ policies.fileSizeLimit }}MB</template>
+							<MkInput v-model="policies.fileSizeLimit" type="number" :min="0">
+								<template #suffix>MB</template>
 							</MkInput>
 						</MkFolder>
 

@@ -7,7 +7,6 @@ import { markRaw, ref } from 'vue';
 import * as Misskey from 'cherrypick-js';
 import { miLocalStorage } from './local-storage.js';
 import type { SoundType } from '@/scripts/sound.js';
-import type { BuiltinTheme as ShikiBuiltinTheme } from 'shiki';
 import { Storage } from '@/pizzax.js';
 import { hemisphere } from '@/scripts/intl-const.js';
 
@@ -95,7 +94,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	defaultNoteVisibility: {
 		where: 'account',
-		default: 'public',
+		default: 'public' as (typeof Misskey.noteVisibilities)[number],
 	},
 	defaultNoteLocalOnly: {
 		where: 'account',
@@ -142,6 +141,7 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'deviceAccount',
 		default: [
 			'notifications',
+			'official_tags',
 			'messaging',
 			'favorites',
 			'followRequests',
@@ -152,7 +152,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	visibility: {
 		where: 'deviceAccount',
-		default: 'public' as 'public' | 'home' | 'followers' | 'specified',
+		default: 'public' as (typeof Misskey.noteVisibilities)[number],
 	},
 	localOnly: {
 		where: 'deviceAccount',
@@ -234,6 +234,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		default: true,
 	},
 	advancedMfm: {
+		where: 'device',
+		default: true,
+	},
+	showReactionsCount: {
 		where: 'device',
 		default: true,
 	},
@@ -465,6 +469,10 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: true,
 	},
+	alwaysConfirmFollow: {
+		where: 'device',
+		default: true,
+	},
 	showUnreadNotificationsCount: {
 		where: 'deviceAccount',
 		default: false,
@@ -611,10 +619,6 @@ export const defaultStore = markRaw(new Storage('base', {
 		where: 'device',
 		default: true,
 	},
-	enableMediaTimeline: {
-		where: 'device',
-		default: true,
-	},
 	enableListTimeline: {
 		where: 'device',
 		default: true,
@@ -625,7 +629,7 @@ export const defaultStore = markRaw(new Storage('base', {
 	},
 	enableChannelTimeline: {
 		where: 'device',
-		default: true,
+		default: false,
 	},
 
 	// - Settings/Sounds & Vibrations
