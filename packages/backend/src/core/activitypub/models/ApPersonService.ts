@@ -5,8 +5,10 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
+import * as Redis from 'ioredis';
 import { DataSource } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
+import got, * as Got from 'got';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, InstancesRepository, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
@@ -40,6 +42,7 @@ import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.j
 import type { AccountMoveService } from '@/core/AccountMoveService.js';
 import { checkHttps } from '@/misc/check-https.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
 import { extractApHashtags } from './tag.js';
 import type { OnModuleInit } from '@nestjs/common';
@@ -47,7 +50,7 @@ import type { ApNoteService } from './ApNoteService.js';
 import type { ApMfmService } from '../ApMfmService.js';
 import type { ApResolverService, Resolver } from '../ApResolverService.js';
 import type { ApLoggerService } from '../ApLoggerService.js';
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+
 import type { ApImageService } from './ApImageService.js';
 import type { IActor, IObject } from '../type.js';
 
@@ -55,7 +58,19 @@ const nameLength = 128;
 const summaryLength = 2048;
 
 type Field = Record<'name' | 'value', string>;
-
+type SkebStatusResponse = {
+	screenName: string;
+	isCreator: boolean;
+	isAcceptable: boolean;
+	creatorRequestCount: number;
+	clientRequestCount: number;
+	skills:SkebSkills[];
+	error:object;
+}
+type SkebSkills = {
+	amount:number;
+	genre:string;
+}
 @Injectable()
 export class ApPersonService implements OnModuleInit {
 	private utilityService: UtilityService;
@@ -102,6 +117,11 @@ export class ApPersonService implements OnModuleInit {
 
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
+
+		@Inject(DI.redis)
+		private redis: Redis.Redis,
+
+		private httpRequestService: HttpRequestService,
 
 		private roleService: RoleService,
 
@@ -309,6 +329,12 @@ export class ApPersonService implements OnModuleInit {
 		const host = this.punyHost(object.id);
 
 		const fields = this.analyzeAttachments(person.attachment ?? []);
+		if (person.id && person.id.startsWith('https://misskey.io/users/')) {
+			const field = await this.updateSkeb(person.id);
+			if (field) {
+				fields.unshift(field);
+			}
+		}
 
 		const tags = extractApHashtags(person.tag).map(normalizeForSearch).splice(0, 32);
 
@@ -551,6 +577,14 @@ export class ApPersonService implements OnModuleInit {
 		const emojiNames = emojis.map(emoji => emoji.name);
 
 		const fields = this.analyzeAttachments(person.attachment ?? []);
+		if (person.id && person.id.startsWith('https://misskey.io')) {
+			if (person.id && person.id.startsWith('https://misskey.io/users/')) {
+				const field = await this.updateSkeb(person.id);
+				if (field) {
+					fields.unshift(field);
+				}
+			}
+		}
 
 		const tags = extractApHashtags(person.tag).map(normalizeForSearch).splice(0, 32);
 
@@ -864,5 +898,64 @@ export class ApPersonService implements OnModuleInit {
 		await this.accountMoveService.postMoveProcess(src, dst);
 
 		return 'ok';
+	}
+
+	@bindThis
+	private async updateSkeb(person:string): Promise<Field | null> {
+		const cache_key = person + '-skeb_status';
+		const cache_value = await this.redis.get(cache_key);
+		if (cache_value !== null) return null;
+
+		try {
+			const url = person.replace('https://misskey.io/users/', 'https://misskey.io/api/users/get-skeb-status?userId=');
+			this.logger.info(`Updating the skeb: ${url}`);
+			const timeout = 30 * 1000;
+			const operationTimeout = 60 * 1000;
+			const res = got.get(url, {
+				headers: {
+					'User-Agent': this.config.userAgent,
+					'Content-Type': 'application/json; charset=utf-8',
+				},
+				timeout: {
+					lookup: timeout,
+					connect: timeout,
+					secureConnect: timeout,
+					socket: timeout,	// read timeout
+					response: timeout,
+					send: timeout,
+					request: operationTimeout,	// whole operation timeout
+				},
+				agent: {
+					http: this.httpRequestService.httpAgent,
+					https: this.httpRequestService.httpsAgent,
+				},
+				http2: true,
+				retry: {
+					limit: 1,
+				},
+				enableUnixSockets: false,
+			});
+			const remote_json = await res.text();
+			const skebStatus = JSON.parse(remote_json) as SkebStatusResponse;
+			const pipeLine = this.redis.pipeline();
+			pipeLine.set(cache_key, remote_json);
+			pipeLine.expire(cache_key, 10 * 60);
+			await pipeLine.exec();
+			//
+			if ((await res).statusCode === 200) {
+				let text = '';
+				if (skebStatus.isCreator && skebStatus.isAcceptable) {
+					text = '[$[border.radius=5,color=FFF $[bg.color=F14668 $[fg.color=FFF  募集中 ]]]' + ' 納品実績 ' + skebStatus.creatorRequestCount + '件](https://skeb.jp/@' + skebStatus.screenName + ')';
+				} else if (skebStatus.isCreator && !skebStatus.isAcceptable) {
+					text = '[$[border.radius=5,color=FFF $[bg.color=363636 $[fg.color=FFF  停止中 ]]]' + ' 納品実績 ' + skebStatus.creatorRequestCount + '件](https://skeb.jp/@' + skebStatus.screenName + ')';
+				} else if (!skebStatus.isCreator) {
+					text = '[$[border.radius=5,color=FFF $[bg.color=363636 $[fg.color=FFF  クライアント ]]]' + ' 取引実績 ' + skebStatus.clientRequestCount + '件](https://skeb.jp/@' + skebStatus.screenName + ')';
+				}
+				return { name: ':skeb: Skeb(自動)', value: text };
+			}
+		} catch (err) {
+			//lintを静かにさせるためだけのコメント
+		}
+		return null;
 	}
 }
