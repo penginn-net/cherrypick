@@ -107,18 +107,48 @@ describe('検索', () => {
 		}, root);
 		assert.strictEqual(assign.status, 204);
 	});
-	test('ファイル付き', async() => {
+
+	test('ファイルオプション:フィルタなし', async() => {
 		const res = await api('notes/advanced-search', {
 			query: 'filetest',
+			fileOption: 'combined',
 		}, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(Array.isArray(res.body), true);
 		assert.strictEqual(res.body.length, 2);
 
-		const res_File_Attached = res.body.find(x => x.id === file_Attached.id);
-		const res_noFile_Attached = res.body.find(x => x.id === nofile_Attached.id);
-		assert.strictEqual(res_File_Attached, file_Attached);
-		assert.strictEqual(res_noFile_Attached, nofile_Attached);
+		const noteIds = res.body.map( x => x.id);
+
+		assert.strictEqual(noteIds.includes(file_Attached.id), true);
+		assert.strictEqual(noteIds.includes(nofile_Attached.id), true);
+	});
+	test('ファイルオプション:ファイル付きのみ', async() => {
+		const res = await api('notes/advanced-search', {
+			query: 'filetest',
+			fileOption: 'file-only',
+		}, alice);
+
+		assert.strictEqual(res.status, 200);
+		assert.strictEqual(Array.isArray(res.body), true);
+		assert.strictEqual(res.body.length, 1);
+
+		const noteIds = res.body.map( x => x.id);
+
+		assert.strictEqual(noteIds.includes(file_Attached.id), true);
+	});
+	test('ファイルオプション:ファイルなしのみ', async() => {
+		const res = await api('notes/advanced-search', {
+			query: 'filetest',
+			fileOption: 'file-only',
+		}, alice);
+
+		assert.strictEqual(res.status, 200);
+		assert.strictEqual(Array.isArray(res.body), true);
+		assert.strictEqual(res.body.length, 1);
+
+		const noteIds = res.body.map( x => x.id);
+
+		assert.strictEqual(noteIds.includes(nofile_Attached.id), true);
 	});
 });
