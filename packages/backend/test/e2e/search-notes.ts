@@ -97,7 +97,7 @@ describe('検索', () => {
 			},
 		}, root);
 
-		assert.strictEqual(roleres.status, 200);
+		assert.strictEqual(roleres.status, 204);
 
 		await new Promise(x => setTimeout(x, 2));
 
@@ -105,7 +105,7 @@ describe('検索', () => {
 			userId: alice.id,
 			roleId: roleres.body.id,
 		}, root);
-		assert.strictEqual(assign.status, 200);
+		assert.strictEqual(assign.status, 204);
 
 		const res = await api('notes/advanced-search', {
 			query: 'filetest',
