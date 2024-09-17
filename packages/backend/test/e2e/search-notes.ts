@@ -71,6 +71,6 @@ describe('検索', () => {
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(Array.isArray(res.body), true);
 		assert.strictEqual(res.body.length, 3);
-		test.todo(res.body);
+		console.log(res);
 	});
 });
