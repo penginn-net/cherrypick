@@ -21,6 +21,8 @@ describe('検索', () => {
 	let sensitiveFile0_1Note: misskey.entities.Note;
 	let sensitiveFile1_2Note: misskey.entities.Note;
 	let sensitiveFile2_2Note: misskey.entities.Note;
+	let sensitive1Id: string;
+	let sensitive2Id: string;
 	let file_Attached: misskey.entities.Note;
 	let nofile_Attached: misskey.entities.Note;
 	let polledNote: misskey.entities.Note;
@@ -38,15 +40,8 @@ describe('検索', () => {
 		const sensitive1 = await uploadUrl(bob, 'https://raw.githubusercontent.com/yojo-art/cherrypick/develop/packages/backend/test/resources/192.jpg');
 		const sensitive2 = await uploadUrl(bob, 'https://raw.githubusercontent.com/yojo-art/cherrypick/develop/packages/backend/test/resources/192.png');
 		const notSensitive = await uploadUrl(bob, 'https://raw.githubusercontent.com/yojo-art/cherrypick/develop/packages/backend/test/resources/rotate.jpg');
-		//
-		api('drive/files/update', {
-			fileId: sensitive1.id,
-			isSensitive: true,
-		}, bob);
-		api('drive/files/update', {
-			fileId: sensitive2.id,
-			isSensitive: true,
-		}, bob);
+		sensitive1Id = sensitive1.id;
+		sensitive2Id = sensitive2.id;
 
 		file_Attached = await post(bob, {
 			text: 'filetest',
@@ -54,6 +49,10 @@ describe('検索', () => {
 		});
 		nofile_Attached = await post(bob, {
 			text: 'filetest',
+		});
+		sensitiveFile0_1Note = await post(bob, {
+			text: 'test_sensitive',
+			fileIds: [notSensitive.id],
 		});
 		sensitiveFile1_2Note = await post(bob, {
 			text: 'test_sensitive',
@@ -72,7 +71,7 @@ describe('検索', () => {
 
 		assert.strictEqual(res.status, 400);
 	});
-	test('高度な検索ロールへのアサイン', async() => {
+	test('検索ロールへのアサイン', async() => {
 		const roleres = await api('admin/roles/create', {
 			name: 'test',
 			description: '',
@@ -93,6 +92,11 @@ describe('検索', () => {
 					priority: 1,
 					value: true,
 				},
+				canSearchNotes: {
+					useDefault: false,
+					priority: 1,
+					value: true,
+				},
 
 			},
 		}, root);
@@ -107,7 +111,6 @@ describe('検索', () => {
 		}, root);
 		assert.strictEqual(assign.status, 204);
 	});
-
 	test('ファイルオプション:フィルタなし', async() => {
 		const res = await api('notes/advanced-search', {
 			query: 'filetest',
@@ -117,11 +120,6 @@ describe('検索', () => {
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(Array.isArray(res.body), true);
 		assert.strictEqual(res.body.length, 2);
-
-		const noteIds = res.body.map( x => x.id);
-
-		assert.strictEqual(noteIds.includes(file_Attached.id), true);
-		assert.strictEqual(noteIds.includes(nofile_Attached.id), true);
 	});
 	test('ファイルオプション:ファイル付きのみ', async() => {
 		const res = await api('notes/advanced-search', {
@@ -135,8 +133,8 @@ describe('検索', () => {
 
 		const noteIds = res.body.map( x => x.id);
 
-		assert.strictEqual(noteIds.includes(file_Attached.id), true);
-		assert.strictEqual(noteIds.includes(nofile_Attached.id), false);
+		assert.strictEqual(noteIds.includes(file_Attached.id), true);//添付ありがある
+		assert.strictEqual(noteIds.includes(nofile_Attached.id), false);//添付なしがない
 	});
 	test('ファイルオプション:ファイルなしのみ', async() => {
 		const res = await api('notes/advanced-search', {
@@ -150,7 +148,83 @@ describe('検索', () => {
 
 		const noteIds = res.body.map( x => x.id);
 
-		assert.strictEqual(noteIds.includes(nofile_Attached.id), true);
-		assert.strictEqual(noteIds.includes(file_Attached.id), false);
+		assert.strictEqual(noteIds.includes(nofile_Attached.id), true);//添付なしがある
+		assert.strictEqual(noteIds.includes(file_Attached.id), false);//添付ありがない
+	});
+	test('センシティブオプション:フラグ付与', async() => {
+		//ファイルへセンシティブフラグの付与
+		const res1 = await	api('drive/files/update', {
+			fileId: sensitive1Id,
+			isSensitive: true,
+		}, bob);
+		assert.strictEqual(res1.status, 200);
+
+		const res2 = await api('drive/files/update', {
+			fileId: sensitive2Id,
+			isSensitive: true,
+		}, bob);
+		assert.strictEqual(res2.status, 200);
+	});
+	test('センシティブオプション:フィルタなし', async() => {
+		const res = await api('notes/advanced-search', {
+			query: 'test_sensitive',
+			sensitiveFilter: 'combined',
+		}, alice);
+
+		assert.strictEqual(res.status, 200);
+		assert.strictEqual(Array.isArray(res.body), true);
+		assert.strictEqual(res.body.length, 3);
+	});
+	test('センシティブオプション:含む', async() => {
+		const res = await api('notes/advanced-search', {
+			query: 'test_sensitive',
+			sensitiveFilter: 'includeSensitive',
+		}, alice);
+
+		assert.strictEqual(res.status, 200);
+		assert.strictEqual(Array.isArray(res.body), true);
+		assert.strictEqual(res.body.length, 2);
+
+		const noteIds = res.body.map( x => x.id);
+
+		assert.strictEqual(noteIds.includes(sensitiveFile0_1Note.id), false);//センシティブなファイルがないノートがない
+		//センシティブなファイルがあるノートがある
+		assert.strictEqual(noteIds.includes(sensitiveFile1_2Note.id), true);
+		assert.strictEqual(noteIds.includes(sensitiveFile2_2Note.id), true);
+	});
+	test('センシティブオプション:除外', async() => {
+		const res = await api('notes/advanced-search', {
+			query: 'test_sensitive',
+			sensitiveFilter: 'withOutSensitive',
+		}, alice);
+
+		assert.strictEqual(res.status, 200);
+		assert.strictEqual(Array.isArray(res.body), true);
+		assert.strictEqual(res.body.length, 1);
+
+		const noteIds = res.body.map( x => x.id);
+		//センシティブなファイルがないノートがある
+		assert.strictEqual(noteIds.includes(sensitiveFile0_1Note.id), true);
+		//センシティブなファイルがあるノートがない
+		assert.strictEqual(noteIds.includes(sensitiveFile1_2Note.id), false);
+		assert.strictEqual(noteIds.includes(sensitiveFile2_2Note.id), false);
+	});
+	test('センシティブオプション:全センシティブ', async() => {
+		const res = await api('notes/advanced-search', {
+			query: 'test_sensitive',
+			sensitiveFilter: 'withOutSensitive',
+		}, alice);
+
+		assert.strictEqual(res.status, 200);
+		assert.strictEqual(Array.isArray(res.body), true);
+		assert.strictEqual(res.body.length, 1);
+
+		const noteIds = res.body.map( x => x.id);
+		//センシティブなファイルがないノートがない
+		assert.strictEqual(noteIds.includes(sensitiveFile0_1Note.id), false);
+		//センシティブなファイルを含むノートがない
+		assert.strictEqual(noteIds.includes(sensitiveFile1_2Note.id), false);
+		//センシティブなファイルのみなノートがある
+		assert.strictEqual(noteIds.includes(sensitiveFile2_2Note.id), true);
 	});
 });
