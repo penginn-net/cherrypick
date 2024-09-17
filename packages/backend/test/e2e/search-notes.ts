@@ -97,7 +97,7 @@ describe('検索', () => {
 			},
 		}, root);
 
-		assert.strictEqual(roleres.status, 204);
+		assert.strictEqual(roleres.status, 200);
 
 		await new Promise(x => setTimeout(x, 2));
 
