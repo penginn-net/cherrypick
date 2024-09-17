@@ -42,6 +42,15 @@ describe('検索', () => {
 		const notSensitive = await uploadUrl(bob, 'https://raw.githubusercontent.com/yojo-art/cherrypick/develop/packages/backend/test/resources/rotate.jpg');
 		sensitive1Id = sensitive1.id;
 		sensitive2Id = sensitive2.id;
+		 await	api('drive/files/update', {
+			fileId: sensitive1Id,
+			isSensitive: true,
+		}, bob);
+
+		 await api('drive/files/update', {
+			fileId: sensitive2Id,
+			isSensitive: true,
+		}, bob);
 
 		file_Attached = await post(bob, {
 			text: 'filetest',
@@ -150,20 +159,6 @@ describe('検索', () => {
 
 		assert.strictEqual(noteIds.includes(nofile_Attached.id), true);//添付なしがある
 		assert.strictEqual(noteIds.includes(file_Attached.id), false);//添付ありがない
-	});
-	test('センシティブオプション:フラグ付与', async() => {
-		//ファイルへセンシティブフラグの付与
-		const res1 = await	api('drive/files/update', {
-			fileId: sensitive1Id,
-			isSensitive: true,
-		}, bob);
-		assert.strictEqual(res1.status, 200);
-
-		const res2 = await api('drive/files/update', {
-			fileId: sensitive2Id,
-			isSensitive: true,
-		}, bob);
-		assert.strictEqual(res2.status, 200);
 	});
 	test('センシティブオプション:フィルタなし', async() => {
 		const res = await api('notes/advanced-search', {
