@@ -212,7 +212,7 @@ describe('検索', () => {
 	test('センシティブオプション:全センシティブ', async() => {
 		const res = await api('notes/advanced-search', {
 			query: 'test_sensitive',
-			sensitiveFilter: 'withOutSensitive',
+			sensitiveFilter: 'sensitiveOnly',
 		}, alice);
 
 		assert.strictEqual(res.status, 200);
