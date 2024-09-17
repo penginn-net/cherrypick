@@ -136,11 +136,12 @@ describe('検索', () => {
 		const noteIds = res.body.map( x => x.id);
 
 		assert.strictEqual(noteIds.includes(file_Attached.id), true);
+		assert.strictEqual(noteIds.includes(nofile_Attached.id), false);
 	});
 	test('ファイルオプション:ファイルなしのみ', async() => {
 		const res = await api('notes/advanced-search', {
 			query: 'filetest',
-			fileOption: 'file-only',
+			fileOption: 'no-file',
 		}, alice);
 
 		assert.strictEqual(res.status, 200);
@@ -150,5 +151,6 @@ describe('検索', () => {
 		const noteIds = res.body.map( x => x.id);
 
 		assert.strictEqual(noteIds.includes(nofile_Attached.id), true);
+		assert.strictEqual(noteIds.includes(file_Attached.id), false);
 	});
 });
