@@ -72,7 +72,7 @@ describe('検索', () => {
 
 		assert.strictEqual(res.status, 400);
 	});
-	test('ファイル付き', async() => {
+	test('高度な検索ロールへのアサイン', async() => {
 		const roleres = await api('admin/roles/create', {
 			name: 'test',
 			description: '',
@@ -106,7 +106,8 @@ describe('検索', () => {
 			roleId: roleres.body.id,
 		}, root);
 		assert.strictEqual(assign.status, 204);
-
+	});
+	test('ファイル付き', async() => {
 		const res = await api('notes/advanced-search', {
 			query: 'filetest',
 		}, alice);
