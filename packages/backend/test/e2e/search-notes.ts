@@ -288,7 +288,7 @@ describe('検索', () => {
 		const ids2 = sres2.body.map( x => x.id);
 		assert.strictEqual(ids2.include(reactedNote.id), true);
 		//リノートしたら出てくる
-		const rnres = await api('notes/reactions/create', {
+		const rnres = await api('notes/create', {
 			renoteId: renotedNote.id,
 		}, alice);
 		assert.strictEqual(rnres.status, 200);
