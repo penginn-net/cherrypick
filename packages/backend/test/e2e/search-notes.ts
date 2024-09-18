@@ -240,6 +240,7 @@ describe('検索', () => {
 			text: 'unindexableUserTest',
 			poll: {
 				choices: ['1', '2'],
+				multiple: false,
 			},
 		 });
 		const clipedNote = await post(carol, { text: 'unindexableUserTest' });
