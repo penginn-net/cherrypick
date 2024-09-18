@@ -42,15 +42,6 @@ describe('検索', () => {
 		const notSensitive = await uploadUrl(bob, 'https://raw.githubusercontent.com/yojo-art/cherrypick/develop/packages/backend/test/resources/rotate.jpg');
 		sensitive1Id = sensitive1.id;
 		sensitive2Id = sensitive2.id;
-		 await	api('drive/files/update', {
-			fileId: sensitive1Id,
-			isSensitive: true,
-		}, bob);
-
-		 await api('drive/files/update', {
-			fileId: sensitive2Id,
-			isSensitive: true,
-		}, bob);
 
 		file_Attached = await post(bob, {
 			text: 'filetest',
@@ -160,6 +151,20 @@ describe('検索', () => {
 		assert.strictEqual(noteIds.includes(nofile_Attached.id), true);//添付なしがある
 		assert.strictEqual(noteIds.includes(file_Attached.id), false);//添付ありがない
 	});
+	test('センシティブオプション:フラグ付与', async() => {
+		//ファイルへセンシティブフラグの付与
+		const res1 = await	api('drive/files/update', {
+			fileId: sensitive1Id,
+			isSensitive: true,
+		}, bob);
+		assert.strictEqual(res1.status, 200);
+
+		const res2 = await api('drive/files/update', {
+			fileId: sensitive2Id,
+			isSensitive: true,
+		}, bob);
+		assert.strictEqual(res2.status, 200);
+	});
 	test('センシティブオプション:フィルタなし', async() => {
 		const res = await api('notes/advanced-search', {
 			query: 'test_sensitive',
@@ -170,6 +175,8 @@ describe('検索', () => {
 		assert.strictEqual(Array.isArray(res.body), true);
 		assert.strictEqual(res.body.length, 3);
 	});
+	/*
+	DB検索では未実装別PRで出す
 	test('センシティブオプション:含む', async() => {
 		const res = await api('notes/advanced-search', {
 			query: 'test_sensitive',
@@ -207,7 +214,7 @@ describe('検索', () => {
 	test('センシティブオプション:全センシティブ', async() => {
 		const res = await api('notes/advanced-search', {
 			query: 'test_sensitive',
-			sensitiveFilter: 'sensitiveOnly',
+			sensitiveFilter: 'withOutSensitive',
 		}, alice);
 
 		assert.strictEqual(res.status, 200);
@@ -221,5 +228,75 @@ describe('検索', () => {
 		assert.strictEqual(noteIds.includes(sensitiveFile1_2Note.id), false);
 		//センシティブなファイルのみなノートがある
 		assert.strictEqual(noteIds.includes(sensitiveFile2_2Note.id), true);
+	});
+	*/
+	test('indexable', async() => {
+		const ires = await api('i/update', {
+			isIndexable: false,
+		}, carol);
+		assert.strictEqual(res.status, 200);
+		const reactedNote = await post(carol, { text: 'unindexableUserTest' });
+		const votedNote = await post(carol, {
+			text: 'unindexableUserTest',
+			poll: {
+				choices: ['1', '2'],
+			},
+		 });
+		const clipedNote = await post(carol, { text: 'unindexableUserTest' });
+		const favoritedNote = await post(carol, { text: 'unindexableUserTest' });
+		const renotedNote = await post(carol, { text: 'unindexableUserTest' });
+		const replyedNote = await post(carol, { text: 'unindexableUserTest' });
+		//無効のユーザーのノートは出てこない
+		const sres1 = await api('notes/advanced-search', {
+			query: 'unindexableUserTest',
+		}, alice);
+		assert.strictEqual(sres1.status, 200);
+		assert.strictEqual(Array.isArray(sres1.body), true);
+		assert.strictEqual(sres1.body.length, 0);
+
+		//投票したら出てくる
+		const vres = await api('notes/polls/vote', {
+			choce: 1,
+			noteId: votedNote.id,
+		}, alice);
+		assert.strictEqual(vres.status, 200);
+		const sres2 = await api('notes/advanced-search', {
+			query: 'unindexableUserTest',
+		}, alice);
+		assert.strictEqual(sres2.status, 200);
+		assert.strictEqual(Array.isArray(sres2.body), true);
+		assert.strictEqual(sres2.body.length, 1);
+
+		const ids1 = sres2.body.map( x => x.id);
+		assert.strictEqual(ids1.include(votedNote.id), true);
+		//リアクションしたら出てくる
+		const rres = await api('notes/reactions/create', {
+			reaction: '❤',
+			noteId: reactedNote.id,
+		}, alice);
+		assert.strictEqual(rres.status, 204);
+		const sres3 = await api('notes/advanced-search', {
+			query: 'unindexableUserTest',
+		}, alice);
+		assert.strictEqual(sres3.status, 200);
+		assert.strictEqual(Array.isArray(sres3.body), true);
+		assert.strictEqual(sres3.body.length, 2);
+
+		const ids2 = sres2.body.map( x => x.id);
+		assert.strictEqual(ids2.include(reactedNote.id), true);
+		//リノートしたら出てくる
+		const rnres = await api('notes/reactions/create', {
+			renoteId: renotedNote.id,
+		}, alice);
+		assert.strictEqual(rnres.status, 200);
+		const sres4 = await api('notes/advanced-search', {
+			query: 'unindexableUserTest',
+		}, alice);
+		assert.strictEqual(sres4.status, 200);
+		assert.strictEqual(Array.isArray(sres4.body), true);
+		assert.strictEqual(sres4.body.length, 3);
+
+		const ids3 = sres4.body.map( x => x.id);
+		assert.strictEqual(ids3.include(renotedNote.id), true);
 	});
 });
