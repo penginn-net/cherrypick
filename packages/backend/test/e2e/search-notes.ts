@@ -256,7 +256,7 @@ describe('検索', () => {
 
 		//投票したら出てくる
 		const vres = await api('notes/polls/vote', {
-			choce: 1,
+			choce: 0,
 			noteId: votedNote.id,
 		}, alice);
 		assert.strictEqual(vres.status, 200);
