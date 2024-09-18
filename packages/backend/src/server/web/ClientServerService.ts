@@ -157,6 +157,11 @@ export class ClientServerService {
 				'sizes': '512x512',
 				'type': 'image/png',
 				'purpose': 'maskable',
+			}, {
+				'src': '/static-assets/splash.png',
+				'sizes': '300x300',
+				'type': 'image/png',
+				'purpose': 'any',
 			}],
 			'share_target': {
 				'action': '/share/',
