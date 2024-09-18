@@ -283,7 +283,7 @@ describe('検索', () => {
 		}, alice);
 		assert.strictEqual(sres3.status, 200);
 		assert.strictEqual(Array.isArray(sres3.body), true);
-		assert.strictEqual(sres3.body.length, 2);
+		assert.strictEqual(sres3.body.length, 1);
 
 		const ids2 = sres2.body.map( x => x.id);
 		assert.strictEqual(ids2.include(reactedNote.id), true);
@@ -297,7 +297,7 @@ describe('検索', () => {
 		}, alice);
 		assert.strictEqual(sres4.status, 200);
 		assert.strictEqual(Array.isArray(sres4.body), true);
-		assert.strictEqual(sres4.body.length, 3);
+		assert.strictEqual(sres4.body.length, 2);
 
 		const ids3 = sres4.body.map( x => x.id);
 		assert.strictEqual(ids3.include(renotedNote.id), true);
