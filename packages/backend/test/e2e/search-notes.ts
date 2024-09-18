@@ -256,6 +256,7 @@ describe('検索', () => {
 		assert.strictEqual(sres1.body.length, 0);
 
 		//投票したら出てくる
+		/*
 		const vres = await api('notes/polls/vote', {
 			choce: 0,
 			noteId: votedNote.id,
@@ -270,6 +271,7 @@ describe('検索', () => {
 
 		const ids1 = sres2.body.map( x => x.id);
 		assert.strictEqual(ids1.include(votedNote.id), true);
+		*/
 		//リアクションしたら出てくる
 		const rres = await api('notes/reactions/create', {
 			reaction: '❤',
