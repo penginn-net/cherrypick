@@ -234,7 +234,7 @@ describe('検索', () => {
 		const ires = await api('i/update', {
 			isIndexable: false,
 		}, carol);
-		assert.strictEqual(res.status, 200);
+		assert.strictEqual(ires.status, 200);
 		const reactedNote = await post(carol, { text: 'unindexableUserTest' });
 		const votedNote = await post(carol, {
 			text: 'unindexableUserTest',
