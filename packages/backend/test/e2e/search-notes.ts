@@ -341,7 +341,7 @@ describe('検索', () => {
 			name: 'test',
 		}, alice);
 		assert.strictEqual(clpres.status, 200);
-		const clpaddres = await api('notes/clips/create', {
+		const clpaddres = await api('clips/add-create', {
 			clipId: clpres.body.id,
 			noteId: clipedNote.id,
 		}, alice);
