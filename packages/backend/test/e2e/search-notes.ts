@@ -248,12 +248,12 @@ describe('検索', () => {
 		const renotedNote = await post(carol, { text: 'unindexableUserTest' });
 		const replyedNote = await post(carol, { text: 'unindexableUserTest' });
 		//無効のユーザーのノートは出てこない
-		const sres1 = await api('notes/advanced-search', {
+		const sres0 = await api('notes/advanced-search', {
 			query: 'unindexableUserTest',
 		}, alice);
-		assert.strictEqual(sres1.status, 200);
-		assert.strictEqual(Array.isArray(sres1.body), true);
-		assert.strictEqual(sres1.body.length, 0);
+		assert.strictEqual(sres0.status, 200);
+		assert.strictEqual(Array.isArray(sres0.body), true);
+		assert.strictEqual(sres0.body.length, 0);
 
 		//投票したら出てくる
 		/*
@@ -278,28 +278,80 @@ describe('検索', () => {
 			noteId: reactedNote.id,
 		}, alice);
 		assert.strictEqual(rres.status, 204);
-		const sres3 = await api('notes/advanced-search', {
+		const asres1 = await api('notes/advanced-search', {
 			query: 'unindexableUserTest',
 		}, alice);
-		assert.strictEqual(sres3.status, 200);
-		assert.strictEqual(Array.isArray(sres3.body), true);
-		assert.strictEqual(sres3.body.length, 1);
+		assert.strictEqual(asres1.status, 200);
+		assert.strictEqual(Array.isArray(asres1.body), true);
+		assert.strictEqual(asres1.body.length, 1);
 
-		const ids2 = sres2.body.map( x => x.id);
-		assert.strictEqual(ids2.include(reactedNote.id), true);
+		const asnids1 = asres1.body.map( x => x.id);
+		assert.strictEqual(asnids1.include(reactedNote.id), true);
 		//リノートしたら出てくる
 		const rnres = await api('notes/create', {
 			renoteId: renotedNote.id,
 		}, alice);
 		assert.strictEqual(rnres.status, 200);
-		const sres4 = await api('notes/advanced-search', {
+		const asres2 = await api('notes/advanced-search', {
 			query: 'unindexableUserTest',
 		}, alice);
-		assert.strictEqual(sres4.status, 200);
-		assert.strictEqual(Array.isArray(sres4.body), true);
-		assert.strictEqual(sres4.body.length, 2);
+		assert.strictEqual(asres2.status, 200);
+		assert.strictEqual(Array.isArray(asres2.body), true);
+		assert.strictEqual(asres2.body.length, 2);
 
-		const ids3 = sres4.body.map( x => x.id);
-		assert.strictEqual(ids3.include(renotedNote.id), true);
+		const asnids2 = asres2.body.map( x => x.id);
+		assert.strictEqual(asnids2.include(renotedNote.id), true);
+
+		//返信したら出てくる
+		const rpres = await api('notes/create', {
+			replyId: renotedNote.id,
+		}, alice);
+		assert.strictEqual(rpres.status, 200);
+		const asres3 = await api('notes/advanced-search', {
+			query: 'unindexableUserTest',
+		}, alice);
+		assert.strictEqual(asres3.status, 200);
+		assert.strictEqual(Array.isArray(asres3.body), true);
+		assert.strictEqual(asres3.body.length, 3);
+
+		const asnids3 = asres3.body.map( x => x.id);
+		assert.strictEqual(asnids3.include(replyedNote.id), true);
+
+		//お気に入りしたら出てくる
+		const fvres = await api('notes/favorites/create', {
+			noteId: renotedNote.id,
+		}, alice);
+		assert.strictEqual(fvres.status, 204);
+		const asres4 = await api('notes/advanced-search', {
+			query: 'unindexableUserTest',
+		}, alice);
+		assert.strictEqual(asres4.status, 200);
+		assert.strictEqual(Array.isArray(asres4.body), true);
+		assert.strictEqual(asres4.body.length, 4);
+
+		const asnids4 = asres4.body.map( x => x.id);
+		assert.strictEqual(asnids4.include(favoritedNote.id), true);
+
+		//クリップしたら出てくる
+		const clpres = await api('notes/clips/create', {
+			noteId: renotedNote.id,
+			isPublic: false,
+			name: 'test',
+		}, alice);
+		assert.strictEqual(clpres.status, 200);
+		const clpaddres = await api('notes/clips/create', {
+			clipId: clpres.body.id,
+			noteId: clipedNote.id,
+		}, alice);
+		assert.strictEqual(fvres.status, 204);
+		const asres5 = await api('notes/advanced-search', {
+			query: 'unindexableUserTest',
+		}, alice);
+		assert.strictEqual(asres5.status, 200);
+		assert.strictEqual(Array.isArray(asres5.body), true);
+		assert.strictEqual(asres5.body.length, 4);
+
+		const asnids5 = asres5.body.map( x => x.id);
+		assert.strictEqual(asnids5.include(clipedNote.id), true);
 	});
 });
