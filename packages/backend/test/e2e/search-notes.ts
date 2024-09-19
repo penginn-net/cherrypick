@@ -255,23 +255,6 @@ describe('検索', () => {
 		assert.strictEqual(Array.isArray(sres0.body), true);
 		assert.strictEqual(sres0.body.length, 0);
 
-		//投票したら出てくる
-		/*
-		const vres = await api('notes/polls/vote', {
-			choce: 0,
-			noteId: votedNote.id,
-		}, alice);
-		assert.strictEqual(vres.status, 200);
-		const sres2 = await api('notes/advanced-search', {
-			query: 'unindexableUserTest',
-		}, alice);
-		assert.strictEqual(sres2.status, 200);
-		assert.strictEqual(Array.isArray(sres2.body), true);
-		assert.strictEqual(sres2.body.length, 1);
-
-		const ids1 = sres2.body.map( x => x.id);
-		assert.strictEqual(ids1.include(votedNote.id), true);
-		*/
 		//リアクションしたら出てくる
 		const rres = await api('notes/reactions/create', {
 			reaction: '❤',
@@ -355,5 +338,21 @@ describe('検索', () => {
 
 		const asnids5 = asres5.body.map( x => x.id);
 		assert.strictEqual(asnids5.includes(clipedNote.id), true);
+
+		//投票したら出てくる
+		const vres = await api('notes/polls/vote', {
+			noteId: votedNote.id,
+			choice: 0,
+		}, alice);
+		assert.strictEqual(vres.status, 204);
+		const asres6 = await api('notes/advanced-search', {
+			query: 'unindexableUserTest',
+		}, alice);
+		assert.strictEqual(asres6.status, 200);
+		assert.strictEqual(Array.isArray(asres6.body), true);
+		assert.strictEqual(asres6.body.length, 6);
+
+		const asnids6 = asres6.body.map( x => x.id);
+		assert.strictEqual(asnids6.includes(votedNote.id), true);
 	});
 });
