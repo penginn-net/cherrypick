@@ -13,9 +13,3 @@ redis:
   host: 127.0.0.1
   port: 56312
 id: aidx
-opensearch:
-  port: 59200
-  user: 'admin'
-  pass: 'LPeSXAbkGxivJGsPR2Yj'
-  ssl: false
-  index: 'test'
