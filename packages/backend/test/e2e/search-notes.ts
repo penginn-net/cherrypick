@@ -320,9 +320,10 @@ describe('検索', () => {
 
 		//お気に入りしたら出てくる
 		const fvres = await api('notes/favorites/create', {
-			noteId: renotedNote.id,
+			noteId: favoritedNote.id,
 		}, alice);
 		assert.strictEqual(fvres.status, 204);
+
 		const asres4 = await api('notes/advanced-search', {
 			query: 'unindexableUserTest',
 		}, alice);
