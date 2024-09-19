@@ -305,7 +305,7 @@ describe('検索', () => {
 		//返信したら出てくる
 		const rpres = await api('notes/create', {
 			text: 'test',
-			replyId: renotedNote.id,
+			replyId: replyedNote.id,
 		}, alice);
 		assert.strictEqual(rpres.status, 200);
 		const asres3 = await api('notes/advanced-search', {
