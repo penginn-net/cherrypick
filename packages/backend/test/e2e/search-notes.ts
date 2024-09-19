@@ -286,7 +286,7 @@ describe('検索', () => {
 		assert.strictEqual(asres1.body.length, 1);
 
 		const asnids1 = asres1.body.map( x => x.id);
-		assert.strictEqual(asnids1.include(reactedNote.id), true);
+		assert.strictEqual(asnids1.includes(reactedNote.id), true);
 		//リノートしたら出てくる
 		const rnres = await api('notes/create', {
 			renoteId: renotedNote.id,
@@ -300,7 +300,7 @@ describe('検索', () => {
 		assert.strictEqual(asres2.body.length, 2);
 
 		const asnids2 = asres2.body.map( x => x.id);
-		assert.strictEqual(asnids2.include(renotedNote.id), true);
+		assert.strictEqual(asnids2.includes(renotedNote.id), true);
 
 		//返信したら出てくる
 		const rpres = await api('notes/create', {
@@ -315,7 +315,7 @@ describe('検索', () => {
 		assert.strictEqual(asres3.body.length, 3);
 
 		const asnids3 = asres3.body.map( x => x.id);
-		assert.strictEqual(asnids3.include(replyedNote.id), true);
+		assert.strictEqual(asnids3.includes(replyedNote.id), true);
 
 		//お気に入りしたら出てくる
 		const fvres = await api('notes/favorites/create', {
@@ -330,7 +330,7 @@ describe('検索', () => {
 		assert.strictEqual(asres4.body.length, 4);
 
 		const asnids4 = asres4.body.map( x => x.id);
-		assert.strictEqual(asnids4.include(favoritedNote.id), true);
+		assert.strictEqual(asnids4.includes(favoritedNote.id), true);
 
 		//クリップしたら出てくる
 		const clpres = await api('notes/clips/create', {
@@ -343,7 +343,7 @@ describe('検索', () => {
 			clipId: clpres.body.id,
 			noteId: clipedNote.id,
 		}, alice);
-		assert.strictEqual(fvres.status, 204);
+		assert.strictEqual(clpaddres.status, 204);
 		const asres5 = await api('notes/advanced-search', {
 			query: 'unindexableUserTest',
 		}, alice);
@@ -352,6 +352,6 @@ describe('検索', () => {
 		assert.strictEqual(asres5.body.length, 4);
 
 		const asnids5 = asres5.body.map( x => x.id);
-		assert.strictEqual(asnids5.include(clipedNote.id), true);
+		assert.strictEqual(asnids5.includes(clipedNote.id), true);
 	});
 });
