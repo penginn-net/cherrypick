@@ -176,7 +176,7 @@ describe('検索', () => {
 		assert.strictEqual(res.body.length, 3);
 	});
 	/*
-	DB検索では未実装別PRで出す
+	DB検索では未実装 別PRで出す
 	test('センシティブオプション:含む', async() => {
 		const res = await api('notes/advanced-search', {
 			query: 'test_sensitive',
