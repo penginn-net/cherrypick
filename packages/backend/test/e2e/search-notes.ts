@@ -351,7 +351,7 @@ describe('検索', () => {
 		}, alice);
 		assert.strictEqual(asres5.status, 200);
 		assert.strictEqual(Array.isArray(asres5.body), true);
-		assert.strictEqual(asres5.body.length, 4);
+		assert.strictEqual(asres5.body.length, 5);
 
 		const asnids5 = asres5.body.map( x => x.id);
 		assert.strictEqual(asnids5.includes(clipedNote.id), true);
