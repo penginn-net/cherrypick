@@ -304,6 +304,7 @@ describe('検索', () => {
 
 		//返信したら出てくる
 		const rpres = await api('notes/create', {
+			text: 'test',
 			replyId: renotedNote.id,
 		}, alice);
 		assert.strictEqual(rpres.status, 200);
