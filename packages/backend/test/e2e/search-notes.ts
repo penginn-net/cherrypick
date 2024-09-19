@@ -335,7 +335,7 @@ describe('検索', () => {
 		assert.strictEqual(asnids4.includes(favoritedNote.id), true);
 
 		//クリップしたら出てくる
-		const clpres = await api('notes/clips/create', {
+		const clpres = await api('clips/create', {
 			noteId: renotedNote.id,
 			isPublic: false,
 			name: 'test',
