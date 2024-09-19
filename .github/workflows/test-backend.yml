@@ -37,7 +37,7 @@ jobs:
         ports:
           - 56312:6379
       ostest:
-        build: ../../../opensearch
+        build: ./opensearch
         environment:
           - "server.ssl.enabled:false"
           - "discovery.type=single-node"
