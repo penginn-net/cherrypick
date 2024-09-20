@@ -248,12 +248,12 @@ describe('検索', () => {
 		const renotedNote = await post(carol, { text: 'unindexableUserTest' });
 		const replyedNote = await post(carol, { text: 'unindexableUserTest' });
 		//無効のユーザーのノートは出てこない
-		const sres0 = await api('notes/advanced-search', {
+		const asres0 = await api('notes/advanced-search', {
 			query: 'unindexableUserTest',
 		}, alice);
-		assert.strictEqual(sres0.status, 200);
-		assert.strictEqual(Array.isArray(sres0.body), true);
-		assert.strictEqual(sres0.body.length, 0);
+		assert.strictEqual(asres0.status, 200);
+		assert.strictEqual(Array.isArray(asres0.body), true);
+		assert.strictEqual(asres0.body.length, 0);
 
 		//リアクションしたら出てくる
 		const rres = await api('notes/reactions/create', {
