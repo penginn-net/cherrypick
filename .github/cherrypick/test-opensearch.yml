@@ -12,10 +12,10 @@ db:
 redis:
   host: 127.0.0.1
   port: 56312
-id: ulid
+id: aidx
 
 opensearch:
-  host: localhost
+  host: 127.0.0.1
   port: 59200
   user: 'admin'
   pass: 'eF53xwF4NYjrcXXwZ2CHgpwFL'
