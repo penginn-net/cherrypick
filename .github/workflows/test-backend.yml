@@ -112,3 +112,59 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./packages/backend/coverage/coverage-final.json
+
+  opensearch-e2e:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.16.0]
+
+    services:
+      postgres:
+        image: postgres:15
+        ports:
+          - 54312:5432
+        env:
+          POSTGRES_DB: test-cherrypick
+          POSTGRES_HOST_AUTH_METHOD: trust
+      redis:
+        image: redis:7
+        ports:
+          - 56312:6379
+      opensearch:
+        image: ghcr.io/yojo-art/sudachi-opensearch:main
+        ports:
+          - 59200:9200
+        environment:
+          - "server.ssl.enabled:false"
+          - "discovery.type=single-node"
+          - "OPENSEARCH_INITIAL_ADMIN_PASSWORD=eF53xwF4NYjrcXXwZ2CHgpwFL" #強めのパスワードじゃないと怒られる
+          - "plugins.security.disabled=true"
+
+    steps:
+      - uses: actions/checkout@v4.1.1
+        with:
+          submodules: true
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4.0.3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      - run: corepack enable
+      - run: pnpm i --frozen-lockfile
+      - name: Check pnpm-lock.yaml
+        run: git diff --exit-code pnpm-lock.yaml
+      - name: Copy Configure
+        run: cp .github/cherrypick/test-opensearch.yml .config
+      - name: Build
+        run: pnpm build
+      - name: Test
+        run: pnpm --filter backend test-and-coverage:e2e
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./packages/backend/coverage/coverage-final.json
