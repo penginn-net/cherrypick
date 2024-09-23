@@ -137,11 +137,11 @@ jobs:
         image: ghcr.io/yojo-art/sudachi-opensearch:main
         ports:
           - 59200:9200
-        environment:
-          - "server.ssl.enabled:false"
-          - "discovery.type=single-node"
-          - "OPENSEARCH_INITIAL_ADMIN_PASSWORD=eF53xwF4NYjrcXXwZ2CHgpwFL" #強めのパスワードじゃないと怒られる
-          - "plugins.security.disabled=true"
+        env:
+          server.ssl.enabled: false
+          discovery.type: single-node
+          OPENSEARCH_INITIAL_ADMIN_PASSWORD: eF53xwF4NYjrcXXwZ2CHgpwFL #強めのパスワードじゃないと怒られる
+          plugins.security.disabled: true
 
     steps:
       - uses: actions/checkout@v4.1.1
