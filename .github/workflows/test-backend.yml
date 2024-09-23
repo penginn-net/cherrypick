@@ -142,6 +142,7 @@ jobs:
         env:
           server.ssl.enabled: false
           discovery.type: single-node
+          DISABLE_SECURITY_PLUGIN: true
           OPENSEARCH_INITIAL_ADMIN_PASSWORD: eF53xwF4NYjrcXXwZ2CHgpwFL #強めのパスワードじゃないと怒られる
           plugins.security.disabled: true
 
