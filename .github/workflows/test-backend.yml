@@ -11,12 +11,14 @@ on:
       # for permissions
       - packages/cherrypick-js/**
       - .github/workflows/test-backend.yml
+      - .github/cherrypick/test*.yml
   pull_request:
     paths:
       - packages/backend/**
       # for permissions
       - packages/cherrypick-js/**
       - .github/workflows/test-backend.yml
+      - .github/cherrypick/test*.yml
 jobs:
   unit:
     runs-on: ubuntu-latest
