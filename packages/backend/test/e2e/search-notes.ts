@@ -391,8 +391,8 @@ describe('検索', () => {
 		const rnres = await api('notes/delete', {
 			noteId: rnId,
 		}, alice);
-		await new Promise(resolve => setTimeout(resolve, 5000));
 		assert.strictEqual(rnres.status, 204);
+		await new Promise(resolve => setTimeout(resolve, 5000));
 		const asres2 = await api('notes/advanced-search', {
 			query: 'indexable_text',
 		}, alice);
@@ -407,8 +407,8 @@ describe('検索', () => {
 		const rnres = await api('notes/delete', {
 			noteId: replyId,
 		}, alice);
-		await new Promise(resolve => setTimeout(resolve, 5000));
 		assert.strictEqual(rnres.status, 204);
+		await new Promise(resolve => setTimeout(resolve, 5000));
 		const asres2 = await api('notes/advanced-search', {
 			query: 'indexable_text',
 		}, alice);
