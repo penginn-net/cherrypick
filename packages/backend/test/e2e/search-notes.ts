@@ -262,6 +262,7 @@ describe('検索', () => {
 			noteId: reactedNote.id,
 		}, alice);
 		assert.strictEqual(rres.status, 204);
+		await new Promise(resolve => setTimeout(resolve, 5000));
 		const asres1 = await api('notes/advanced-search', {
 			query: 'indexable_text',
 		}, alice);
