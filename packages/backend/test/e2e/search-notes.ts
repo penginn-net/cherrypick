@@ -52,8 +52,8 @@ describe('検索', () => {
 		aliceMuting = await signup({ username: 'aliceMuting' });
 		await api('blocking/create', { userId: alice.id }, aliceBlocking);
 		await api('mute/create', { userId: aliceMuting.id }, alice);
-		mutingNote = await post(aliceBlocking, { text: 'muting' });
-		blockingNote = await post(blockingNote, { text: 'blocking' });
+		blockingNote = await post(aliceBlocking, { text: 'blocking' });
+		mutingNote = await post(aliceMuting, { text: 'muting' });
 		const sensitive1 = await uploadUrl(bob, 'https://raw.githubusercontent.com/yojo-art/cherrypick/develop/packages/backend/test/resources/192.jpg');
 		const sensitive2 = await uploadUrl(bob, 'https://raw.githubusercontent.com/yojo-art/cherrypick/develop/packages/backend/test/resources/192.png');
 		const notSensitive = await uploadUrl(bob, 'https://raw.githubusercontent.com/yojo-art/cherrypick/develop/packages/backend/test/resources/rotate.jpg');
