@@ -280,7 +280,7 @@ describe('検索', () => {
 		}, alice);
 		await new Promise(resolve => setTimeout(resolve, 5000));
 		assert.strictEqual(rnres.status, 200);
-		rnId = rnres.body.id;
+		rnId = rnres.body.renoteId.id;
 		const asres2 = await api('notes/advanced-search', {
 			query: 'indexable_text',
 		}, alice);
