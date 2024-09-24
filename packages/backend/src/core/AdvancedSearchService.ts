@@ -847,7 +847,7 @@ export class AdvancedSearchService {
 
 		/*ブロックされている or ミュートしているフィルタ*/
 		const userIdsWhoMeMuting = meUserId ? await this.cacheService.userMutingsCache.fetch(meUserId) : new Set<string>;
-		const	userIdsWhoMeBlockingMe = meUserId ? await this.cacheService.userBlockingCache.fetch(meUserId) : new Set<string>;
+		const	userIdsWhoMeBlockingMe = meUserId ? await this.cacheService.userBlockedCache.fetch(meUserId) : new Set<string>;
 		const Filter = Array.from(userIdsWhoMeMuting).concat(Array.from(userIdsWhoMeBlockingMe));
 
 		let Followings: string[];
