@@ -921,10 +921,7 @@ export class AdvancedSearchService {
 		const user = await this.cacheService.findUserById(Note._source.userId);
 		if (!user) return null;
  		if (user.isIndexable === false) { //検索許可されていないが、
-			if (meUserId) {
-				return null;
-			}
-			if (!this.opensearch) {
+			if (meUserId === undefined || this.opensearch === null) {
 				return null;
 			}
 			const Option = {
