@@ -216,12 +216,13 @@ describe('検索', () => {
 		}, alice);
 		assert.strictEqual(asres0.status, 200);
 		assert.strictEqual(Array.isArray(asres0.body), true);
-		assert.strictEqual(asres0.body.length, 2);
+
 		const ids = asres0.body.map((x) => x.id);
 		assert.strictEqual(ids.includes(tomNote.id), true);
 		assert.strictEqual(ids.includes(tomNoteDirect.id), true);
 		assert.strictEqual(ids.includes(daveNote.id), false);
 		assert.strictEqual(ids.includes(daveNoteDirect.id), false);
+		assert.strictEqual(asres0.body.length, 2);
 	});
 	test('ミュートしてたら出ない', async() => {
 		const asres0 = await api('notes/advanced-search', {
