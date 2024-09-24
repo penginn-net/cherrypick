@@ -425,18 +425,19 @@ describe('検索', () => {
 		assert.strictEqual(fvres.status, 200);
 		fvres.body.forEach(async note => {
 			await api('notes/favorites/delete', { noteId: note.id }, alice);
+		}).then(async() => {
+			await new Promise(resolve => setTimeout(resolve, 5000));
+
+			const asres4 = await api('notes/advanced-search', {
+				query: 'indexable_text',
+			}, alice);
+			assert.strictEqual(asres4.status, 200);
+			assert.strictEqual(Array.isArray(asres4.body), true);
+			assert.strictEqual(asres4.body.length, 2);
+
+			const asnids4 = asres4.body.map( x => x.id);
+			assert.strictEqual(asnids4.includes(favoritedNote.id), false);
 		});
-		await new Promise(resolve => setTimeout(resolve, 5000));
-
-		const asres4 = await api('notes/advanced-search', {
-			query: 'indexable_text',
-		}, alice);
-		assert.strictEqual(asres4.status, 200);
-		assert.strictEqual(Array.isArray(asres4.body), true);
-		assert.strictEqual(asres4.body.length, 2);
-
-		const asnids4 = asres4.body.map( x => x.id);
-		assert.strictEqual(asnids4.includes(favoritedNote.id), false);
 	});
 	test('indexable false クリップ消したらでない', async() => {
 		const clpaddres = await api('clips/remove-note', {
