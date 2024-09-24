@@ -86,7 +86,7 @@ describe('検索', () => {
 
 		await api('following/create', { userId: tom.id }, alice);
 		tomNote = await post(tom, { text: 'ff_test', visibility: 'followers' });
-		tomNoteDirect = await post(tom, { text: 'ff_test', visibility: 'specified', visibleUserIds: [alice.id] });
+		tomNoteDirect = await post(tom, { text: '@alice ff_test', visibility: 'specified', visibleUserIds: [alice.id] });
 
 		reactedNote = await post(carol, { text: 'indexable_text' });
 		votedNote = await post(carol, {
