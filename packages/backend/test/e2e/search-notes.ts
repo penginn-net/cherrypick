@@ -64,18 +64,18 @@ describe('検索', () => {
 			text: 'test_sensitive',
 			fileIds: [sensitive1.id, sensitive2.id],
 		});
-		reactedNote = await post(carol, { text: 'indexable' });
+		reactedNote = await post(carol, { text: 'indexable_text' });
 		votedNote = await post(carol, {
-			text: 'indexable',
+			text: 'indexable_text',
 			poll: {
 				choices: ['1', '2'],
 				multiple: false,
 			},
 		 });
-		clipedNote = await post(carol, { text: 'indexable' });
-		favoritedNote = await post(carol, { text: 'indexable' });
-		renotedNote = await post(carol, { text: 'indexable' });
-		replyedNote = await post(carol, { text: 'indexable' });
+		clipedNote = await post(carol, { text: 'indexable_text' });
+		favoritedNote = await post(carol, { text: 'indexable_text' });
+		renotedNote = await post(carol, { text: 'indexable_text' });
+		replyedNote = await post(carol, { text: 'indexable_text' });
 	}, 1000 * 60 * 2);
 
 	test('権限がないのでエラー', async () => {
@@ -250,7 +250,7 @@ describe('検索', () => {
 		}, carol);
 		assert.strictEqual(ires.status, 200);
 		const asres0 = await api('notes/advanced-search', {
-			query: 'indexable',
+			query: 'indexable_text',
 		}, alice);
 		assert.strictEqual(asres0.status, 200);
 		assert.strictEqual(Array.isArray(asres0.body), true);
@@ -263,7 +263,7 @@ describe('検索', () => {
 		}, alice);
 		assert.strictEqual(rres.status, 204);
 		const asres1 = await api('notes/advanced-search', {
-			query: 'indexable',
+			query: 'indexable_text',
 		}, alice);
 		assert.strictEqual(asres1.status, 200);
 		assert.strictEqual(Array.isArray(asres1.body), true);
@@ -278,7 +278,7 @@ describe('検索', () => {
 		}, alice);
 		assert.strictEqual(rnres.status, 200);
 		const asres2 = await api('notes/advanced-search', {
-			query: 'indexable',
+			query: 'indexable_text',
 		}, alice);
 		assert.strictEqual(asres2.status, 200);
 		assert.strictEqual(Array.isArray(asres2.body), true);
@@ -294,7 +294,7 @@ describe('検索', () => {
 		}, alice);
 		assert.strictEqual(rpres.status, 200);
 		const asres3 = await api('notes/advanced-search', {
-			query: 'indexable',
+			query: 'indexable_text',
 		}, alice);
 		assert.strictEqual(asres3.status, 200);
 		assert.strictEqual(Array.isArray(asres3.body), true);
@@ -310,7 +310,7 @@ describe('検索', () => {
 		assert.strictEqual(fvres.status, 204);
 
 		const asres4 = await api('notes/advanced-search', {
-			query: 'indexable',
+			query: 'indexable_text',
 		}, alice);
 		assert.strictEqual(asres4.status, 200);
 		assert.strictEqual(Array.isArray(asres4.body), true);
@@ -332,7 +332,7 @@ describe('検索', () => {
 		}, alice);
 		assert.strictEqual(clpaddres.status, 204);
 		const asres5 = await api('notes/advanced-search', {
-			query: 'indexable',
+			query: 'indexable_text',
 		}, alice);
 		assert.strictEqual(asres5.status, 200);
 		assert.strictEqual(Array.isArray(asres5.body), true);
@@ -348,7 +348,7 @@ describe('検索', () => {
 		}, alice);
 		assert.strictEqual(vres.status, 204);
 		const asres6 = await api('notes/advanced-search', {
-			query: 'indexable',
+			query: 'indexable_text',
 		}, alice);
 		assert.strictEqual(asres6.status, 200);
 		assert.strictEqual(Array.isArray(asres6.body), true);
