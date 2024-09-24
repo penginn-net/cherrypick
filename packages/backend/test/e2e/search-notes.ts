@@ -39,6 +39,7 @@ describe('検索', () => {
 	let replyedNote: misskey.entities.Note;
 	let mutingNote: misskey.entities.Note;
 	let blockingNote: misskey.entities.Note;
+
 	beforeAll(async () => {
 		root = await signup({ username: 'root' });
 		alice = await signup({ username: 'alice' });
@@ -66,6 +67,7 @@ describe('検索', () => {
 		nofile_Attached = await post(bob, {
 			text: 'filetest',
 		});
+
 		sensitiveFile0_1Note = await post(bob, {
 			text: 'test_sensitive',
 			fileIds: [notSensitive.id],
@@ -79,9 +81,10 @@ describe('検索', () => {
 			fileIds: [sensitive1.id, sensitive2.id],
 		});
 
-		await api('follwing/create', { userId: tom.id }, alice);
 		daveNote = await post(dave, { text: 'ff_test', visibility: 'followers' });
 		daveNoteDirect = await post(dave, { text: 'ff_test', visibility: 'specified', visibleUserIds: [] });
+
+		await api('following/create', { userId: tom.id }, alice);
 		tomNote = await post(tom, { text: 'ff_test', visibility: 'followers' });
 		tomNoteDirect = await post(tom, { text: 'ff_test', visibility: 'specified', visibleUserIds: [alice.id] });
 
