@@ -437,7 +437,7 @@ describe('検索', () => {
 		assert.strictEqual(asnids5.includes(clipedNote.id), false);
 	});
 	test('indexable false お気に入り消したらでない', async() => {
-		const fvres = await api('notes/favorites/delete', { noteId: note.id }, alice);
+		const fvres = await api('notes/favorites/delete', { noteId: favoritedNote.id }, alice);
 		assert.strictEqual(fvres.status, 204);
 		await new Promise(resolve => setTimeout(resolve, 5000));
 
