@@ -81,12 +81,12 @@ describe('検索', () => {
 			fileIds: [sensitive1.id, sensitive2.id],
 		});
 
-		daveNote = await post(dave, { text: 'example', visibility: 'followers' });
-		daveNoteDirect = await post(dave, { text: 'example', visibility: 'specified', visibleUserIds: [] });
+		daveNote = await post(dave, { text: 'ff_test', visibility: 'followers' });
+		daveNoteDirect = await post(dave, { text: 'ff_test', visibility: 'specified', visibleUserIds: [] });
 
 		await api('following/create', { userId: tom.id }, alice);
-		tomNote = await post(tom, { text: 'example', visibility: 'followers' });
-		tomNoteDirect = await post(tom, { text: '@alice example', visibility: 'specified', visibleUserIds: [alice.id] });
+		tomNote = await post(tom, { text: 'ff_test', visibility: 'followers' });
+		tomNoteDirect = await post(tom, { text: '@alice ff_test', visibility: 'specified', visibleUserIds: [alice.id] });
 
 		reactedNote = await post(carol, { text: 'indexable_text' });
 		votedNote = await post(carol, {
@@ -100,6 +100,8 @@ describe('検索', () => {
 		favoritedNote = await post(carol, { text: 'indexable_text' });
 		renotedNote = await post(carol, { text: 'indexable_text' });
 		replyedNote = await post(carol, { text: 'indexable_text' });
+
+		await new Promise(resolve => setTimeout(resolve, 5000));
 	}, 1000 * 60 * 2);
 
 	test('権限がないのでエラー', async () => {
@@ -215,7 +217,7 @@ describe('検索', () => {
 	});
 	test('可視性 followers, specified', async() => {
 		const asres0 = await api('notes/advanced-search', {
-			query: 'example',
+			query: 'ff_test',
 		}, alice);
 		assert.strictEqual(asres0.status, 200);
 		assert.strictEqual(Array.isArray(asres0.body), true);
