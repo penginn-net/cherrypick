@@ -81,11 +81,12 @@ describe('検索', () => {
 			fileIds: [sensitive1.id, sensitive2.id],
 		});
 
-		daveNote = await post(dave, { text: 'ff_test', visibility: 'followers' });
-		daveNoteDirect = await post(dave, { text: 'ff_test', visibility: 'specified', visibleUserIds: [] });
+		daveNote = await post(dave, { text: 'example', visibility: 'followers' });
+		daveNoteDirect = await post(dave, { text: 'example', visibility: 'specified', visibleUserIds: [] });
 
-		tomNote = await post(tom, { text: 'ff_test', visibility: 'followers' });
-		tomNoteDirect = await post(tom, { text: '@alice ff_test', visibility: 'specified', visibleUserIds: [alice.id] });
+		await api('following/create', { userId: tom.id }, alice);
+		tomNote = await post(tom, { text: 'example', visibility: 'followers' });
+		tomNoteDirect = await post(tom, { text: '@alice example', visibility: 'specified', visibleUserIds: [alice.id] });
 
 		reactedNote = await post(carol, { text: 'indexable_text' });
 		votedNote = await post(carol, {
@@ -211,6 +212,20 @@ describe('検索', () => {
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(Array.isArray(res.body), true);
 		assert.strictEqual(res.body.length, 3);
+	});
+	test('可視性 followers, specified', async() => {
+		const asres0 = await api('notes/advanced-search', {
+			query: 'example',
+		}, alice);
+		assert.strictEqual(asres0.status, 200);
+		assert.strictEqual(Array.isArray(asres0.body), true);
+
+		const ids = asres0.body.map((x) => x.id);
+		assert.strictEqual(ids.includes(tomNote.id), true);
+		assert.strictEqual(ids.includes(tomNoteDirect.id), true);
+		assert.strictEqual(ids.includes(daveNote.id), false);
+		assert.strictEqual(ids.includes(daveNoteDirect.id), false);
+		assert.strictEqual(asres0.body.length, 2);
 	});
 	test('ミュートしてたら出ない', async() => {
 		const asres0 = await api('notes/advanced-search', {
