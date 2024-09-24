@@ -277,6 +277,7 @@ describe('検索', () => {
 		const rnres = await api('notes/create', {
 			renoteId: renotedNote.id,
 		}, alice);
+		await new Promise(resolve => setTimeout(resolve, 5000));
 		assert.strictEqual(rnres.status, 200);
 		const asres2 = await api('notes/advanced-search', {
 			query: 'indexable_text',
@@ -294,6 +295,7 @@ describe('検索', () => {
 			replyId: replyedNote.id,
 		}, alice);
 		assert.strictEqual(rpres.status, 200);
+		await new Promise(resolve => setTimeout(resolve, 5000));
 		const asres3 = await api('notes/advanced-search', {
 			query: 'indexable_text',
 		}, alice);
@@ -309,6 +311,7 @@ describe('検索', () => {
 			noteId: favoritedNote.id,
 		}, alice);
 		assert.strictEqual(fvres.status, 204);
+		await new Promise(resolve => setTimeout(resolve, 5000));
 
 		const asres4 = await api('notes/advanced-search', {
 			query: 'indexable_text',
@@ -327,6 +330,7 @@ describe('検索', () => {
 			name: 'test',
 		}, alice);
 		assert.strictEqual(clpres.status, 200);
+		await new Promise(resolve => setTimeout(resolve, 5000));
 		const clpaddres = await api('clips/add-note', {
 			clipId: clpres.body.id,
 			noteId: clipedNote.id,
@@ -348,6 +352,7 @@ describe('検索', () => {
 			choice: 0,
 		}, alice);
 		assert.strictEqual(vres.status, 204);
+		await new Promise(resolve => setTimeout(resolve, 5000));
 		const asres6 = await api('notes/advanced-search', {
 			query: 'indexable_text',
 		}, alice);
