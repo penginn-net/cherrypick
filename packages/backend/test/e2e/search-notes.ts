@@ -81,9 +81,9 @@ describe('検索', () => {
 
 		await api('follwing/create', { userId: tom.id }, alice);
 		daveNote = await post(dave, { text: 'ff_test', visibility: 'followers' });
-		daveNoteDirect = await post(dave, { text: 'ff_test', visibility: 'specified', visibleUserIds: [alice.id] });
+		daveNoteDirect = await post(dave, { text: 'ff_test', visibility: 'specified', visibleUserIds: [] });
 		tomNote = await post(tom, { text: 'ff_test', visibility: 'followers' });
-		tomNoteDirect = await post(tom, { text: 'ff_test', visibility: 'specified', visibleUserIds: [] });
+		tomNoteDirect = await post(tom, { text: 'ff_test', visibility: 'specified', visibleUserIds: [alice.id] });
 
 		reactedNote = await post(carol, { text: 'indexable_text' });
 		votedNote = await post(carol, {
