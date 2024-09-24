@@ -18,6 +18,8 @@ describe('検索', () => {
 	let dave: misskey.entities.SignupResponse;
 	let tom: misskey.entities.SignupResponse;
 	let root: misskey.entities.SignupResponse;
+	let aliceBlocking: misskey.entities.SignupResponse;
+	let aliceMuting: misskey.entities.SignupResponse;
 	let sensitiveFile0_1Note: misskey.entities.Note;
 	let sensitiveFile1_2Note: misskey.entities.Note;
 	let sensitiveFile2_2Note: misskey.entities.Note;
@@ -35,7 +37,8 @@ describe('検索', () => {
 	let favoritedNote: misskey.entities.Note;
 	let renotedNote: misskey.entities.Note;
 	let replyedNote: misskey.entities.Note;
-
+	let mutingNote: misskey.entities.Note;
+	let blockingNote: misskey.entities.Note;
 	beforeAll(async () => {
 		root = await signup({ username: 'root' });
 		alice = await signup({ username: 'alice' });
@@ -43,6 +46,13 @@ describe('検索', () => {
 		carol = await signup({ username: 'carol' });
 		dave = await signup({ username: 'dave' });
 		tom = await signup({ username: 'tom' });
+
+		aliceBlocking = await signup({ username: 'aliceBlocking' });
+		aliceMuting = await signup({ username: 'aliceMuting' });
+		await api('blocking/create', { userId: alice.id }, aliceBlocking);
+		await api('mute/create', { userId: aliceMuting.id }, alice);
+		mutingNote = await post(aliceBlocking, { text: 'muting' });
+		blockingNote = await post(blockingNote, { text: 'blocking' });
 		const sensitive1 = await uploadUrl(bob, 'https://raw.githubusercontent.com/yojo-art/cherrypick/develop/packages/backend/test/resources/192.jpg');
 		const sensitive2 = await uploadUrl(bob, 'https://raw.githubusercontent.com/yojo-art/cherrypick/develop/packages/backend/test/resources/192.png');
 		const notSensitive = await uploadUrl(bob, 'https://raw.githubusercontent.com/yojo-art/cherrypick/develop/packages/backend/test/resources/rotate.jpg');
@@ -212,6 +222,22 @@ describe('検索', () => {
 		assert.strictEqual(ids.includes(tomNoteDirect.id), true);
 		assert.strictEqual(ids.includes(daveNote.id), false);
 		assert.strictEqual(ids.includes(daveNoteDirect.id), false);
+	});
+	test('ミュートしてたら出ない', async() => {
+		const asres0 = await api('notes/advanced-search', {
+			query: 'muting',
+		}, alice);
+		assert.strictEqual(asres0.status, 200);
+		assert.strictEqual(Array.isArray(asres0.body), true);
+		assert.strictEqual(asres0.body.length, 0);
+	});
+	test('ブロックされてたら出ない', async() => {
+		const asres0 = await api('notes/advanced-search', {
+			query: 'blocking',
+		}, alice);
+		assert.strictEqual(asres0.status, 200);
+		assert.strictEqual(Array.isArray(asres0.body), true);
+		assert.strictEqual(asres0.body.length, 0);
 	});
 	/*
 	DB検索では未実装 別PRで出す
