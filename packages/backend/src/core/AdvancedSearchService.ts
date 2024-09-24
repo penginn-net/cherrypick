@@ -84,10 +84,12 @@ const noteIndexBody = {
 		properties: {
 			text: {
 				type: 'text',
-				analyzer: 'sudachi_analyzer' },
+				analyzer: 'sudachi_analyzer',
+			},
 			cw: {
 				type: 'text',
-				analyzer: 'sudachi_analyzer' },
+				analyzer: 'sudachi_analyzer',
+			},
 			userId: { type: 'keyword' },
 			userHost: { type: 'keyword' },
 			createdAt: { type: 'date' },

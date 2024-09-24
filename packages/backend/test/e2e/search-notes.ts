@@ -273,12 +273,14 @@ describe('検索', () => {
 		const asnids1 = asres1.body.map( x => x.id);
 		assert.strictEqual(asnids1.includes(reactedNote.id), true);
 	});
+	let rnId: string;
 	test('indexable false リノートしたら出てくる', async() => {
 		const rnres = await api('notes/create', {
 			renoteId: renotedNote.id,
 		}, alice);
 		await new Promise(resolve => setTimeout(resolve, 5000));
 		assert.strictEqual(rnres.status, 200);
+		rnId = rnres.body.id;
 		const asres2 = await api('notes/advanced-search', {
 			query: 'indexable_text',
 		}, alice);
@@ -289,13 +291,16 @@ describe('検索', () => {
 		const asnids2 = asres2.body.map( x => x.id);
 		assert.strictEqual(asnids2.includes(renotedNote.id), true);
 	});
+	let replyId: string;
 	test('indexable false 返信したら出てくる', async() => {
 		const rpres = await api('notes/create', {
 			text: 'test',
 			replyId: replyedNote.id,
 		}, alice);
 		assert.strictEqual(rpres.status, 200);
+		replyId = rpres.body.createdNote.id;
 		await new Promise(resolve => setTimeout(resolve, 5000));
+
 		const asres3 = await api('notes/advanced-search', {
 			query: 'indexable_text',
 		}, alice);
@@ -323,6 +328,7 @@ describe('検索', () => {
 		const asnids4 = asres4.body.map( x => x.id);
 		assert.strictEqual(asnids4.includes(favoritedNote.id), true);
 	});
+	let clpId: string;
 	test('indexable false クリップしたら出てくる', async() => {
 		const clpres = await api('clips/create', {
 			noteId: renotedNote.id,
@@ -330,6 +336,7 @@ describe('検索', () => {
 			name: 'test',
 		}, alice);
 		assert.strictEqual(clpres.status, 200);
+		clpId = clpres.body.id;
 		const clpaddres = await api('clips/add-note', {
 			clipId: clpres.body.id,
 			noteId: clipedNote.id,
@@ -362,5 +369,90 @@ describe('検索', () => {
 
 		const asnids6 = asres6.body.map( x => x.id);
 		assert.strictEqual(asnids6.includes(votedNote.id), true);
+	});
+	//
+	test('indexable false リアクション外したらでない', async() => {
+		const rres = await api('notes/reactions/create', {
+			noteId: reactedNote.id,
+		}, alice);
+		assert.strictEqual(rres.status, 204);
+		await new Promise(resolve => setTimeout(resolve, 5000));
+		const asres1 = await api('notes/advanced-search', {
+			query: 'indexable_text',
+		}, alice);
+		assert.strictEqual(asres1.status, 200);
+		assert.strictEqual(Array.isArray(asres1.body), true);
+		assert.strictEqual(asres1.body.length, 5);
+
+		const asnids1 = asres1.body.map( x => x.id);
+		assert.strictEqual(asnids1.includes(reactedNote.id), false);
+	});
+	test('indexable false リノート消したらでない', async() => {
+		const rnres = await api('notes/delete', {
+			noteId: rnId,
+		}, alice);
+		await new Promise(resolve => setTimeout(resolve, 5000));
+		assert.strictEqual(rnres.status, 204);
+		const asres2 = await api('notes/advanced-search', {
+			query: 'indexable_text',
+		}, alice);
+		assert.strictEqual(asres2.status, 200);
+		assert.strictEqual(Array.isArray(asres2.body), true);
+		assert.strictEqual(asres2.body.length, 4);
+
+		const asnids2 = asres2.body.map( x => x.id);
+		assert.strictEqual(asnids2.includes(renotedNote.id), false);
+	});
+	test('indexable false リプライ消したらでない', async() => {
+		const rnres = await api('notes/delete', {
+			noteId: replyId,
+		}, alice);
+		await new Promise(resolve => setTimeout(resolve, 5000));
+		assert.strictEqual(rnres.status, 204);
+		const asres2 = await api('notes/advanced-search', {
+			query: 'indexable_text',
+		}, alice);
+		assert.strictEqual(asres2.status, 200);
+		assert.strictEqual(Array.isArray(asres2.body), true);
+		assert.strictEqual(asres2.body.length, 4);
+
+		const asnids2 = asres2.body.map( x => x.id);
+		assert.strictEqual(asnids2.includes(renotedNote.id), false);
+	});
+	test('indexable false お気に入り消したらでない', async() => {
+		const fvres = await api('i/favorites', {
+		}, alice);
+		assert.strictEqual(fvres.status, 200);
+		fvres.body.forEach(async note => {
+			await api('notes/favorites/delete', { noteId: note.id }, alice);
+		});
+		await new Promise(resolve => setTimeout(resolve, 5000));
+
+		const asres4 = await api('notes/advanced-search', {
+			query: 'indexable_text',
+		}, alice);
+		assert.strictEqual(asres4.status, 200);
+		assert.strictEqual(Array.isArray(asres4.body), true);
+		assert.strictEqual(asres4.body.length, 3);
+
+		const asnids4 = asres4.body.map( x => x.id);
+		assert.strictEqual(asnids4.includes(favoritedNote.id), false);
+	});
+	test('indexable false クリップ消したらでない', async() => {
+		const clpaddres = await api('clips/remove-note', {
+			clipId: clpId,
+			noteId: clipedNote.id,
+		}, alice);
+		assert.strictEqual(clpaddres.status, 204);
+		await new Promise(resolve => setTimeout(resolve, 5000));
+		const asres5 = await api('notes/advanced-search', {
+			query: 'indexable_text',
+		}, alice);
+		assert.strictEqual(asres5.status, 200);
+		assert.strictEqual(Array.isArray(asres5.body), true);
+		assert.strictEqual(asres5.body.length, 2);
+
+		const asnids5 = asres5.body.map( x => x.id);
+		assert.strictEqual(asnids5.includes(clipedNote.id), true);
 	});
 });
