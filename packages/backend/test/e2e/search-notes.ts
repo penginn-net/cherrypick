@@ -27,6 +27,10 @@ describe('検索', () => {
 	let sensitive2Id: string;
 	let file_Attached: misskey.entities.Note;
 	let nofile_Attached: misskey.entities.Note;
+	let daveNote: misskey.entities.Note;
+	let daveNoteDirect: misskey.entities.Note;
+	let tomNote: misskey.entities.Note;
+	let tomNoteDirect: misskey.entities.Note;
 	let reactedNote: misskey.entities.Note;
 	let votedNote: misskey.entities.Note;
 	let clipedNote: misskey.entities.Note;
@@ -76,6 +80,13 @@ describe('検索', () => {
 			text: 'test_sensitive',
 			fileIds: [sensitive1.id, sensitive2.id],
 		});
+
+		daveNote = await post(dave, { text: 'ff_test', visibility: 'followers' });
+		daveNoteDirect = await post(dave, { text: 'ff_test', visibility: 'specified', visibleUserIds: [] });
+
+		await api('following/create', { userId: tom.id }, alice);
+		tomNote = await post(tom, { text: 'ff_test', visibility: 'followers' });
+		tomNoteDirect = await post(tom, { text: '@alice ff_test', visibility: 'specified', visibleUserIds: [alice.id] });
 
 		reactedNote = await post(carol, { text: 'indexable_text' });
 		votedNote = await post(carol, {
@@ -201,6 +212,36 @@ describe('検索', () => {
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(Array.isArray(res.body), true);
 		assert.strictEqual(res.body.length, 3);
+	});
+	test('可視性 followers, specified', async() => {
+		const asres0 = await api('notes/advanced-search', {
+			query: 'ff_test',
+		}, alice);
+		assert.strictEqual(asres0.status, 200);
+		assert.strictEqual(Array.isArray(asres0.body), true);
+
+		const ids = asres0.body.map((x) => x.id);
+		assert.strictEqual(ids.includes(tomNote.id), true);
+		assert.strictEqual(ids.includes(tomNoteDirect.id), true);
+		assert.strictEqual(ids.includes(daveNote.id), false);
+		assert.strictEqual(ids.includes(daveNoteDirect.id), false);
+		assert.strictEqual(asres0.body.length, 2);
+	});
+	test('ミュートしてたら出ない', async() => {
+		const asres0 = await api('notes/advanced-search', {
+			query: 'muting',
+		}, alice);
+		assert.strictEqual(asres0.status, 200);
+		assert.strictEqual(Array.isArray(asres0.body), true);
+		assert.strictEqual(asres0.body.length, 0);
+	});
+	test('ブロックされてたら出ない', async() => {
+		const asres0 = await api('notes/advanced-search', {
+			query: 'blocking',
+		}, alice);
+		assert.strictEqual(asres0.status, 200);
+		assert.strictEqual(Array.isArray(asres0.body), true);
+		assert.strictEqual(asres0.body.length, 0);
 	});
 	/*
 	DB検索では未実装 別PRで出す
@@ -464,4 +505,5 @@ describe('検索', () => {
 		const asnids4 = asres4.body.map( x => x.id);
 		assert.strictEqual(asnids4.includes(favoritedNote.id), false);
 	});
+	//投票は消せないので対象外
 });
