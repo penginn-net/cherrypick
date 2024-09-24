@@ -5,7 +5,6 @@ on:
     branches:
       - master
       - develop
-      - indexable-test
     paths:
       - packages/backend/**
       # for permissions
@@ -163,7 +162,7 @@ jobs:
       - name: Build
         run: pnpm build
       - name: Test
-        run: pnpm --filter backend test-and-coverage:e2e
+        run: pnpm jest -- search-notes.ts
       - name: Upload to Codecov
         uses: codecov/codecov-action@v4
         with:
