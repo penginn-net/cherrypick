@@ -330,12 +330,12 @@ describe('検索', () => {
 			name: 'test',
 		}, alice);
 		assert.strictEqual(clpres.status, 200);
-		await new Promise(resolve => setTimeout(resolve, 5000));
 		const clpaddres = await api('clips/add-note', {
 			clipId: clpres.body.id,
 			noteId: clipedNote.id,
 		}, alice);
 		assert.strictEqual(clpaddres.status, 204);
+		await new Promise(resolve => setTimeout(resolve, 5000));
 		const asres5 = await api('notes/advanced-search', {
 			query: 'indexable_text',
 		}, alice);
