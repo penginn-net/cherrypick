@@ -501,7 +501,7 @@ export class AdvancedSearchService {
 		this.opensearch.delete({
 			index: index,
 			id: id,
-		}).catch((error) => {	console.error(error);});
+		}).catch((error) => {	this.logger.error(error);});
 	}
 
 	@bindThis
@@ -512,7 +512,7 @@ export class AdvancedSearchService {
 			body: {
 				query: query,
 			},
-		}).catch((error) => {	console.error(error);});
+		}).catch((error) => {	this.logger.error(error);});
 	}
 
 	@bindThis
