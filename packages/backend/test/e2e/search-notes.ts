@@ -84,7 +84,6 @@ describe('検索', () => {
 		daveNote = await post(dave, { text: 'ff_test', visibility: 'followers' });
 		daveNoteDirect = await post(dave, { text: 'ff_test', visibility: 'specified', visibleUserIds: [] });
 
-		await api('following/create', { userId: tom.id }, alice);
 		tomNote = await post(tom, { text: 'ff_test', visibility: 'followers' });
 		tomNoteDirect = await post(tom, { text: '@alice ff_test', visibility: 'specified', visibleUserIds: [alice.id] });
 
