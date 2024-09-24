@@ -372,7 +372,7 @@ describe('検索', () => {
 	});
 	//
 	test('indexable false リアクション外したらでない', async() => {
-		const rres = await api('notes/reactions/create', {
+		const rres = await api('notes/reactions/delete', {
 			noteId: reactedNote.id,
 		}, alice);
 		assert.strictEqual(rres.status, 204);
