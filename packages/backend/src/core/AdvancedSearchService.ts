@@ -1002,6 +1002,16 @@ export class AdvancedSearchService {
 				}
 			}
 
+			if (opts.sensitiveFilter) {
+				if (opts.sensitiveFilter === 'withOutSensitive') {
+					query.andWhere('(SELECT COUNT(*) FROM drive_file WHERE id=ANY(note.fileIds) AND "isSensitive"=true) = 0');
+				} else if (opts.sensitiveFilter === 'includeSensitive') {
+					query.andWhere('(SELECT COUNT(*) FROM drive_file WHERE id=ANY(note.fileIds) AND "isSensitive"=true) > 0');
+				} else if (opts.sensitiveFilter === 'sensitiveOnly') {
+					query.andWhere('(SELECT COUNT(*) FROM drive_file WHERE id=ANY(note.fileIds) AND "isSensitive"=true) = (array_length(note.fileIds,1))');
+				}
+			}
+
 			this.queryService.generateVisibilityQuery(query, me);
 			this.queryService.generateSearchableQuery(query, me);
 			if (me) this.queryService.generateMutedUserQuery(query, me);
