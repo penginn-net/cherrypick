@@ -288,6 +288,7 @@ describe('検索', () => {
 		}, alice);
 
 		assert.strictEqual(res.status, 200);
+		console.info(JSON.stringify(res.body));
 		assert.strictEqual(Array.isArray(res.body), true);
 		assert.strictEqual(res.body.length, 1);
 

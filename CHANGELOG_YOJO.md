@@ -36,9 +36,9 @@ Cherrypick 4.11.1
 - Fix: チャットの絵文字ピッカーが正しく入力できないことがあるのを修正
 
 ### Server
+- Enhance: Opensearch利用時ファイルのセンシティブ状態が変更されたとき変更されるように
 - Enhance: リモートユーザーの`/api/clips/show`と`/api/users/clips`の応答にemojisを追加 [#466](https://github.com/yojo-art/cherrypick/pull/466)
 - Change: `notes/advanced-search`で`query`が必須ではなくなりました
-
 ### Misc
 
 ## 1.0.1
