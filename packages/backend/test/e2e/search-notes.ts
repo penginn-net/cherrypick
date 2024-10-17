@@ -74,7 +74,7 @@ describe('検索', () => {
 		});
 		sensitiveFile1_2Note = await post(bob, {
 			text: 'test_sensitive',
-			fileIds: [sensitive1.id],
+			fileIds: [notSensitive.id, sensitive1.id],
 		});
 		sensitiveFile2_2Note = await post(bob, {
 			text: 'test_sensitive',
