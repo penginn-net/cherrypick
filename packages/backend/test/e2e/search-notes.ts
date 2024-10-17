@@ -204,6 +204,7 @@ describe('検索', () => {
 			isSensitive: true,
 		}, bob);
 		assert.strictEqual(res2.status, 200);
+		await new Promise(resolve => setTimeout(resolve, 5000));
 	});
 	test('センシティブオプション:フィルタなし', async() => {
 		const res = await api('notes/advanced-search', {
@@ -283,7 +284,7 @@ describe('検索', () => {
 	test('センシティブオプション:全センシティブ', async() => {
 		const res = await api('notes/advanced-search', {
 			query: 'test_sensitive',
-			sensitiveFilter: 'withOutSensitive',
+			sensitiveFilter: 'sensitiveOnly',
 		}, alice);
 
 		assert.strictEqual(res.status, 200);
