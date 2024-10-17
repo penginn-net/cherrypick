@@ -978,9 +978,11 @@ export class AdvancedSearchService {
 
 			if (q && q !== '') {
 				if (this.config.pgroonga) {
-					query.andWhere('note.text &@~ :q', { q: `%${sqlLikeEscape(q)}%` });
+					query.andWhere('note.text &@~ :q', { q: `%${sqlLikeEscape(q)}%` })
+						.orWhere('note.cw &@~ :q');
 				} else {
-					query.andWhere('note.text ILIKE :q', { q: `%${sqlLikeEscape(q)}%` });
+					query.andWhere('note.text ILIKE :q', { q: `%${sqlLikeEscape(q)}%` })
+						.orWhere('note.cw ILIKE :q');
 				}
 			}
 
@@ -1015,6 +1017,13 @@ export class AdvancedSearchService {
 
 			if (opts.excludeReply) {
 				query.andWhere('note.replyId IS NULL');
+			}
+
+			if (opts.excludeQuote) {
+				query.andWhere('note.renoteId IS NOT NULL');
+				query.andWhere('note.text IS NOT NULL');
+			} else {
+				query.andWhere('note.renoteId IS NOT NULL');
 			}
 
 			if (opts.fileOption) {
