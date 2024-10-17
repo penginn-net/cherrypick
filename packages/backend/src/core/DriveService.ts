@@ -10,6 +10,7 @@ import sharp from 'sharp';
 import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import { IsNull } from 'typeorm';
 import { DeleteObjectCommandInput, PutObjectCommandInput, NoSuchKey } from '@aws-sdk/client-s3';
+import { ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, UsersRepository, DriveFoldersRepository, UserProfilesRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
@@ -45,6 +46,7 @@ import { isMimeImage } from '@/misc/is-mime-image.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { RegistryApiService } from '@/core/RegistryApiService.js';
+import { AdvancedSearchService } from './AdvancedSearchService.js';
 
 type AddFileArgs = {
 	/** User who wish to add file */
@@ -95,6 +97,7 @@ export class DriveService {
 	private registerLogger: Logger;
 	private downloaderLogger: Logger;
 	private deleteLogger: Logger;
+	private advancedSearchService: AdvancedSearchService;
 
 	constructor(
 		@Inject(DI.config)
@@ -131,13 +134,16 @@ export class DriveService {
 		private instanceChart: InstanceChart,
 		private utilityService: UtilityService,
 		private registryApiService: RegistryApiService,
+		private moduleRef: ModuleRef,
 	) {
 		const logger = new Logger('drive', 'blue');
 		this.registerLogger = logger.createSubLogger('register', 'yellow');
 		this.downloaderLogger = logger.createSubLogger('downloader');
 		this.deleteLogger = logger.createSubLogger('delete');
 	}
-
+	onModuleInit() {
+		this.advancedSearchService = this.moduleRef.get('AdvancedSearchService');
+	}
 	/***
 	 * Save file
 	 * @param path Path for original
@@ -746,7 +752,6 @@ export class DriveService {
 		if (file.userId) {
 			this.globalEventService.publishDriveStream(file.userId, 'fileUpdated', fileObj);
 		}
-
 		if (await this.roleService.isModerator(updater) && (file.userId !== updater.id)) {
 			if (values.isSensitive !== undefined && values.isSensitive !== file.isSensitive) {
 				const user = file.userId ? await this.usersRepository.findOneByOrFail({ id: file.userId }) : null;
@@ -768,6 +773,7 @@ export class DriveService {
 			}
 		}
 
+		this.advancedSearchService.updateNoteSensitive(file.id);
 		return fileObj;
 	}
 
