@@ -23,6 +23,7 @@ import { AntennaService } from './AntennaService.js';
 import { AppLockService } from './AppLockService.js';
 import { AchievementService } from './AchievementService.js';
 import { AvatarDecorationService } from './AvatarDecorationService.js';
+import { BlockService } from './BlockSearvice.js';
 import { CaptchaService } from './CaptchaService.js';
 import { CreateSystemUserService } from './CreateSystemUserService.js';
 import { CustomEmojiService } from './CustomEmojiService.js';
@@ -176,6 +177,7 @@ const $AntennaService: Provider = { provide: 'AntennaService', useExisting: Ante
 const $AppLockService: Provider = { provide: 'AppLockService', useExisting: AppLockService };
 const $AchievementService: Provider = { provide: 'AchievementService', useExisting: AchievementService };
 const $AvatarDecorationService: Provider = { provide: 'AvatarDecorationService', useExisting: AvatarDecorationService };
+const $BlockService: Provider = { provide: 'BlockService', useExisting: BlockService };
 const $CaptchaService: Provider = { provide: 'CaptchaService', useExisting: CaptchaService };
 const $CreateSystemUserService: Provider = { provide: 'CreateSystemUserService', useExisting: CreateSystemUserService };
 const $CustomEmojiService: Provider = { provide: 'CustomEmojiService', useExisting: CustomEmojiService };
@@ -337,6 +339,7 @@ const $ApGameService: Provider = { provide: 'ApGameService', useExisting: ApGame
 		AppLockService,
 		AchievementService,
 		AvatarDecorationService,
+		BlockService,
 		CaptchaService,
 		CreateSystemUserService,
 		CustomEmojiService,
@@ -494,6 +497,7 @@ const $ApGameService: Provider = { provide: 'ApGameService', useExisting: ApGame
 		$AppLockService,
 		$AchievementService,
 		$AvatarDecorationService,
+		$BlockService,
 		$CaptchaService,
 		$CreateSystemUserService,
 		$CustomEmojiService,
@@ -652,6 +656,7 @@ const $ApGameService: Provider = { provide: 'ApGameService', useExisting: ApGame
 		AppLockService,
 		AchievementService,
 		AvatarDecorationService,
+		BlockService,
 		CaptchaService,
 		CreateSystemUserService,
 		CustomEmojiService,
@@ -808,6 +813,7 @@ const $ApGameService: Provider = { provide: 'ApGameService', useExisting: ApGame
 		$AppLockService,
 		$AchievementService,
 		$AvatarDecorationService,
+		BlockService,
 		$CaptchaService,
 		$CreateSystemUserService,
 		$CustomEmojiService,
