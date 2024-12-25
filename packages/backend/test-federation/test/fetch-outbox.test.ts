@@ -28,30 +28,77 @@ describe('fetch-outbox', () => {
 		await alice.client.request('ap/fetch-outbox', { userId: bobInAliceHost.id, wait: true, includeAnnounce: false });
 		const fetch_notes = await alice.client.request('users/notes', { userId: bobInAliceHost.id, withReplies: false, withRenotes: true });
 		strictEqual(fetch_notes.length, 1, JSON.stringify(fetch_notes));
-		deepStrictEqual(JSON.stringify(fetch_notes.map(note => note.text)), JSON.stringify([bobNote.text]));
-		deepStrictEqual(fetch_notes.map(note => note.createdAt), [bobNote.createdAt]);
+		deepStrictEqual(JSON.stringify(fetch_notes.map(note => {
+			return {
+				text: note.text,
+				createdAt: note.createdAt,
+			};
+		})), JSON.stringify([
+			{
+				text: bobNote.text,
+				createdAt: bobNote.createdAt,
+			},
+		]));
 	});
 	test('includeAnnounce true(Know User)', async () => {
 		await alice.client.request('ap/fetch-outbox', { userId: bobInAliceHost.id, wait: true, includeAnnounce: true });
 		const fetch_notes = await alice.client.request('users/notes', { userId: bobInAliceHost.id, withReplies: false, withRenotes: true });
 		strictEqual(fetch_notes.length, 2, JSON.stringify(fetch_notes));
-		deepStrictEqual(JSON.stringify(fetch_notes.map(note => note.text)), JSON.stringify([bobRenote.text, bobNote.text]));
-		deepStrictEqual(fetch_notes.map(note => note.createdAt), [bobRenote.createdAt, bobNote.createdAt]);
+		deepStrictEqual(JSON.stringify(fetch_notes.map(note => {
+			return {
+				text: note.text,
+				createdAt: note.createdAt,
+			};
+		})), JSON.stringify([
+			{
+				text: bobRenote.text,
+				createdAt: bobRenote.createdAt,
+			}, {
+				text: bobNote.text,
+				createdAt: bobNote.createdAt,
+			},
+		]));
 		strictEqual(fetch_notes[0].renote?.id, fetch_notes[1].id);
 	});
 	test('includeAnnounce true(New User)', async () => {
 		await alice.client.request('ap/fetch-outbox', { userId: carolInAliceHost.id, wait: true, includeAnnounce: true });
 		const fetch_notes = await alice.client.request('users/notes', { userId: carolInAliceHost.id, withReplies: false, withRenotes: true });
 		strictEqual(fetch_notes.length, 2, JSON.stringify(fetch_notes));
-		deepStrictEqual(JSON.stringify(fetch_notes.map(note => note.text)), JSON.stringify([carolRenote.text, carolNote.text]));
-		deepStrictEqual(fetch_notes.map(note => note.createdAt), [carolRenote.createdAt, carolNote.createdAt]);
+		deepStrictEqual(JSON.stringify(fetch_notes.map(note => {
+			return {
+				text: note.text,
+				createdAt: note.createdAt,
+			};
+		})), JSON.stringify([
+			{
+				text: carolRenote.text,
+				createdAt: carolRenote.createdAt,
+			}, {
+				text: carolNote.text,
+				createdAt: carolNote.createdAt,
+			},
+		]));
 		strictEqual(fetch_notes[0].renote?.id, fetch_notes[1].id);
 	});
 	test('includeAnnounce false(Know User)', async () => {
 		await alice.client.request('ap/fetch-outbox', { userId: carolInAliceHost.id, wait: true, includeAnnounce: false });
 		const fetch_notes = await alice.client.request('users/notes', { userId: carolInAliceHost.id, withReplies: false, withRenotes: true });
+		//一度取得したノートは破棄されない
 		strictEqual(fetch_notes.length, 2, JSON.stringify(fetch_notes));
-		deepStrictEqual(JSON.stringify(fetch_notes.map(note => note.text)), JSON.stringify([carolRenote.text, carolNote.text]));
-		deepStrictEqual(fetch_notes.map(note => note.createdAt), [carolRenote.createdAt, carolNote.createdAt]);
+		deepStrictEqual(JSON.stringify(fetch_notes.map(note => {
+			return {
+				text: note.text,
+				createdAt: note.createdAt,
+			};
+		})), JSON.stringify([
+			{
+				text: carolRenote.text,
+				createdAt: carolRenote.createdAt,
+			}, {
+				text: carolNote.text,
+				createdAt: carolNote.createdAt,
+			},
+		]));
+		strictEqual(fetch_notes[0].renote?.id, fetch_notes[1].id);
 	});
 });
