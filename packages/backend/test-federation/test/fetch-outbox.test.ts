@@ -21,7 +21,7 @@ describe('Move', () => {
 		test('includeAnnounce true', async () => {
 			const note = (await alice.client.request('notes/create', { text: 'I am Yojo!' })).createdNote;
 			await bob.client.request('ap/fetch-outbox', { userId: aliceInB.id, wait: true, includeAnnounce: true });
-			const fetch_notes = await bob.client.request('users/notes', { userId: aliceInB.id, withFiles: true, withRenotes: true, withReplies: true });
+			const fetch_notes = await bob.client.request('users/notes', { userId: aliceInB.id, withFiles: true, withRenotes: true });
 			strictEqual(fetch_notes.map(note => note.text)[0], note.text);
 		});
 	});
