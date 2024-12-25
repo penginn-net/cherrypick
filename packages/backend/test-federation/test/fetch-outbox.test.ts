@@ -22,7 +22,7 @@ describe('fetch-outbox', () => {
 		bobNote = (await bob.client.request('notes/create', { text: 'I am Bob!' })).createdNote;
 		bobRenote = (await bob.client.request('notes/create', { renoteId: bobNote.id })).createdNote;
 		carolNote = (await carol.client.request('notes/create', { text: 'I am Carol!' })).createdNote;
-		carolRenote = (await bob.client.request('notes/create', { renoteId: carolNote.id })).createdNote;
+		carolRenote = (await carol.client.request('notes/create', { renoteId: carolNote.id })).createdNote;
 	});
 	test('includeAnnounce false(New User)', async () => {
 		await alice.client.request('ap/fetch-outbox', { userId: bobInAliceHost.id, wait: true, includeAnnounce: false });
